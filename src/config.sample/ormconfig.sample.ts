@@ -1,4 +1,7 @@
-{
+import { DataSourceOptions } from 'typeorm';
+
+const configsample: DataSourceOptions = {
+
     "type": "mysql",
     "host": "localhost",
     "port": 3306,
@@ -11,7 +14,5 @@
     "migrationsRun": false,
     "logging": true,
     "migrations":["dist/src//**/db/migrations/*{.ts,.js}"],
-    "cli": {
-        "migrationsDir": "db/migrations"
-    }
   }
+  export default configsample;
