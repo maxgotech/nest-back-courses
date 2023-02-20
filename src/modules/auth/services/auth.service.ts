@@ -1,21 +1,28 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Admin } from "src/modules/admin/model/admin";
-import { AdminRepository } from "src/modules/admin/services/admin.repository";
+import { Admin } from "src/modules/admin/model/admin.entity";
+import { DataSource, Repository } from "typeorm";
+import { InjectDataSource } from "@nestjs/typeorm";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService{
+    private adminRepository: Repository<Admin>;
     constructor(
-        private adminRepository:AdminRepository,
-        private jwtService:JwtService
+        private jwtService:JwtService,
+        @InjectDataSource() private dataSource: DataSource
         ){
+            this.adminRepository = this.dataSource.getRepository(Admin)
     }
-
     async validateAdmin(login:string, pass:string):Promise<Admin>{
-        const admin: Admin = await this.adminRepository.FindByLogin(login);
+        const admin: Admin = await this.adminRepository.findOne({
+            where:{
+                login
+            }
+        });
 
-        if (admin && admin.password === pass) {
-            const{password,...secureAdmin} = admin;
+        if (admin && await bcrypt.compare(pass,admin.passwordHash)) {
+            const{passwordHash,...secureAdmin} = admin;
             return secureAdmin;
         }
         return null;
