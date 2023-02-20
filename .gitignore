@@ -35,4 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 src/config
+src/modules/admin/db
 .env
