@@ -1,3 +1,4 @@
+import { UserModule } from './modules/user/user.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,11 +8,12 @@ import { ConfigModule } from '@nestjs/config';
 import DataOptions from './config/ormconfig';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(DataOptions),
+  imports: [
+    UserModule, TypeOrmModule.forRoot(DataOptions),
     AuthModule,
     ConfigModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
