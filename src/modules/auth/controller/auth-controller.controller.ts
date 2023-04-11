@@ -1,15 +1,13 @@
 import {Controller, Body, Post, HttpException, HttpStatus, UsePipes, Get, Req, UseGuards} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { AuthServiceService } from '../service/auth-service.service';
+import { AuthService } from '../service/auth-service.service';
 import { LoginUserDto } from 'src/modules/user/dto/user-login.dto';
 import { CreateUserDto } from 'src/modules/user/dto/user-create.dto';
-import { JwtPayload } from '../interfaces/payload.interface';
 import { RegistrationStatus } from '../interfaces/register-status.interface';
 import { LoginStatus } from '../interfaces/login-status.interface';
 
 @Controller('auth')
 export class AuthControllerController { 
-    constructor(private readonly authService: AuthServiceService) {}
+    constructor(private readonly authService: AuthService) {}
 
     @Post('register')  
     public async register(@Body() createUserDto: CreateUserDto,  ): Promise<RegistrationStatus> {    
