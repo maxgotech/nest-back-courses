@@ -55,4 +55,15 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         await this.userRepo.save(user);
         return toUserDto(user);  
     }
+
+    async UserDatabyMail({ mail }: UserDto): Promise<UserDto> {    
+        const user = await this.userRepo.findOne({ where: { mail } });
+        
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);    
+        }
+        
+        return toUserDto(user);  
+    }
+
 }

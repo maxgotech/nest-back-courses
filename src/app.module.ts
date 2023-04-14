@@ -1,3 +1,4 @@
+import { UserController } from './modules/user/controller/user-controller.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { Module } from '@nestjs/common';
@@ -14,7 +15,8 @@ import DataOptions from './config/ormconfig';
     TypeOrmModule.forRoot(DataOptions),
     ConfigModule.forRoot()
   ],
-  controllers: [AppController],
+  controllers: [
+    UserController, AppController],
   providers: [AppService],
 })
 export class AppModule { }
