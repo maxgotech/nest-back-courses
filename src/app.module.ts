@@ -1,3 +1,4 @@
+import { StudiesModule } from './modules/studies/studies.module';
 import { UserController } from './modules/user/controller/user-controller.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
@@ -10,6 +11,7 @@ import DataOptions from './config/ormconfig';
 
 @Module({
   imports: [
+    StudiesModule,
     AuthModule,
     UserModule,
     TypeOrmModule.forRoot(DataOptions),
