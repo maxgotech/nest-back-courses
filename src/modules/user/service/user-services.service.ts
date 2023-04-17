@@ -11,7 +11,7 @@ import { comparePasswords } from 'src/shared/utils';
 
 @Injectable()
 export class UserService {
-constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>, ) {}
+constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity> ) {}
 
     async findOne(options?: object): Promise<UserDto> {
         const user =  await this.userRepo.findOne(options);    

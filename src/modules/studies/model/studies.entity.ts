@@ -8,11 +8,14 @@ export class StudiesEntity {
     @Column({nullable:false})
     name:string;
 
-    @Column()
+    @Column({nullable:true})
     type:string;
 
-    @Column()
+    @Column({nullable:true})
     id_content:number;
+
+    @Column({nullable:false})
+    id_createdBy:number;
 
     @CreateDateColumn()
     createdAt:Date;
