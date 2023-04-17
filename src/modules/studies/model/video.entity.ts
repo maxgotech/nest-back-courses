@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, BeforeInsert } from "typeorm";
 
-Entity('video')
+@Entity('video')
 export class VideoEntity {
     @PrimaryGeneratedColumn()
     id: number;
