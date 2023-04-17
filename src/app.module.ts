@@ -17,6 +17,6 @@ import DataOptions from './config/ormconfig';
     ConfigModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [ AppService],
+  providers: [AppService],
 })
 export class AppModule { }
