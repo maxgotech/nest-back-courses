@@ -2,7 +2,7 @@ import { CreateStudyDto } from '../dto/study-create.dto';
 import { StudiesEntity } from '../model/studies.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { StudyDto } from '../dto/study.dto';
 import { toStudyDto } from 'src/shared/mapper';
 
@@ -30,5 +30,14 @@ export class StudiesServices {
         const study: StudiesEntity = await this.studyRepo.create({ name, id_createdBy });
         await this.studyRepo.save(study);
         return toStudyDto(study);
+    }
+
+    async StudyListByCreatorID({ id_createdBy }: StudyDto){
+        if (id_createdBy==null){
+            return;
+        } else{
+        const StudyList = await this.studyRepo.find({ where: { id_createdBy } });
+        return StudyList;
+    }
     }
 }
