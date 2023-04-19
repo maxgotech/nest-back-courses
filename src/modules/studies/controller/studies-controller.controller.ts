@@ -14,7 +14,7 @@ export class StudiesController{
         return await this.studyService.create(CreateStudyDto);  
     }
 
-    @Get('studylist')
+    @Post('studylist')
     getStudies(@Body() studyDto:StudyDto){
         return this.studyService.StudyListByCreatorID(studyDto);
     }
