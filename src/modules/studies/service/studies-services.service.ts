@@ -37,7 +37,7 @@ export class StudiesServices {
             return;
         } else{
         const StudyList = await this.studyRepo.find({ where: { id_createdBy } });
-        return StudyList;
+        return StudyList.reverse();
     }
     }
 }
