@@ -2,7 +2,7 @@ import { CreateStudyDto } from '../dto/study-create.dto';
 import { StudiesEntity } from '../model/studies.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { StudyDto } from '../dto/study.dto';
 import { toStudyDto } from 'src/shared/mapper';
 
