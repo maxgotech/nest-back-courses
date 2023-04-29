@@ -35,9 +35,17 @@ export class StudiesServices {
     async StudyListByCreatorID({ id_createdBy }: StudyDto){
         if (id_createdBy==null){
             return;
-        } else{
+        } else {
         const StudyList = await this.studyRepo.find({ where: { id_createdBy } });
         return StudyList.reverse();
+    }
+    }
+    async FindstudyByID({id}:StudyDto){
+        if (id==null){
+            return;
+        } else {
+        const Study = await this.studyRepo.findOne({ where: { id } });
+        return toStudyDto(Study);
     }
     }
 }

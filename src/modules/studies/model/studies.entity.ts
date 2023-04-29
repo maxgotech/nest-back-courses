@@ -9,10 +9,11 @@ export class StudiesEntity {
     name:string;
 
     @Column({nullable:true})
-    type:string;
+    id_content:number;
 
     @Column({nullable:true})
-    id_content:number;
+    type_content:number;  // 1 - text
+                          // 2 - video 
 
     @Column({nullable:false})
     id_createdBy:number;

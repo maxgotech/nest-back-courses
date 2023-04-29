@@ -18,4 +18,9 @@ export class StudiesController{
     getStudies(@Body() studyDto:StudyDto){
         return this.studyService.StudyListByCreatorID(studyDto);
     }
+
+    @Post('study')
+    getStudy(@Body() studyDto:StudyDto){
+        return this.studyService.FindstudyByID(studyDto);
+    }
 }
