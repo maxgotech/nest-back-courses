@@ -48,4 +48,20 @@ export class StudiesServices {
         return toStudyDto(Study);
     }
     }
+
+    async updateStudyTypeContent(studyDto: StudyDto): Promise<StudyDto> {    
+        const { id, type_content  } = studyDto;
+        await this.studyRepo.save({id:id,type_content:type_content})
+        const Study = await this.studyRepo.findOne({ where: { id } });
+        return toStudyDto(Study);
+    }
+
+    async updateStudyIdContent(studyDto: StudyDto): Promise<StudyDto> {    
+        const { id, id_content  } = studyDto;
+        await this.studyRepo.save({id:id,id_content:id_content})
+        const Study = await this.studyRepo.findOne({ where: { id } });
+        return toStudyDto(Study);
+    }
+
+
 }

@@ -23,4 +23,14 @@ export class StudiesController{
     getStudy(@Body() studyDto:StudyDto){
         return this.studyService.FindstudyByID(studyDto);
     }
+
+    @Post('updateTypeContent')
+    updateTypeContent(@Body() studyDto:StudyDto){
+        return this.studyService.updateStudyTypeContent(studyDto);
+    }
+
+    @Post('updateIdContent')
+    updateIdContent(@Body() studyDto:StudyDto){
+        return this.studyService.updateStudyIdContent(studyDto);
+    }
 }

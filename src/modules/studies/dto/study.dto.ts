@@ -9,6 +9,8 @@ export class StudyDto {
 
   id_content: number;
 
+  type_content:number;
+
   @IsNotEmpty()
   id_createdBy: number;
 
