@@ -8,10 +8,10 @@ export class VideoEntity {
     @Column({nullable:false})
     path:string;
 
-    @Column()
+    @Column({})
     length:string;
 
-    @Column()
+    @Column({})
     size:number;
 
     @CreateDateColumn()

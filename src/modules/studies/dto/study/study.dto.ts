@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class StudyDto {
+  
   @IsNotEmpty()
   id: number;
 

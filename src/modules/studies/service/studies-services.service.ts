@@ -1,22 +1,32 @@
-import { CreateStudyDto } from '../dto/study-create.dto';
+import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudiesEntity } from '../model/studies.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { StudyDto } from '../dto/study.dto';
-import { toStudyDto } from 'src/shared/mapper';
+import { StudyDto } from '../dto/study/study.dto';
+import { toStudyDto, toTextDto, toVideoDto } from 'src/shared/mapper';
+import { CreateVideoDto } from '../dto/video/video-create.dto';
+import { VideoDto } from '../dto/video/video.dto';
+import { VideoEntity } from '../model/video.entity';
+import { TextEntity } from '../model/text.entity';
+import { CreateTextDto } from '../dto/text/text-create.dto';
+import { TextDto } from '../dto/text/text.dto';
 
 @Injectable()
 export class StudiesServices { 
 
-    constructor( @InjectRepository(StudiesEntity) private readonly studyRepo: Repository<StudiesEntity>){}
+    constructor( 
+        @InjectRepository(StudiesEntity) private readonly studyRepo: Repository<StudiesEntity>,
+        @InjectRepository(VideoEntity) private readonly videoRepo: Repository<VideoEntity>,
+        @InjectRepository(TextEntity) private readonly textRepo: Repository<TextEntity>
+        ){}
 
     async findOne(options?: object): Promise<StudyDto> {
         const study =  await this.studyRepo.findOne(options);    
         return toStudyDto(study);  
     }
 
-    async create(studyDto: CreateStudyDto): Promise<StudyDto> {    
+    async createStudy(studyDto: CreateStudyDto): Promise<StudyDto> {    
         const { name, id_createdBy  } = studyDto;
         
         // check if the study exists in the db    
@@ -61,6 +71,22 @@ export class StudiesServices {
         await this.studyRepo.save({id:id,id_content:id_content})
         const Study = await this.studyRepo.findOne({ where: { id } });
         return toStudyDto(Study);
+    }
+
+    async createVideoStudy(videoDto: CreateVideoDto): Promise<VideoDto> {    
+        const { path, length, size  } = videoDto;
+        
+        const video: VideoEntity = await this.videoRepo.create({ path, length,size });
+        await this.videoRepo.save(video);
+        return toVideoDto(video);
+    }
+
+    async createTextStudy(textDto: CreateTextDto): Promise<TextDto> {    
+        const { rawtext, content  } = textDto;
+        
+        const text: TextEntity = await this.textRepo.create({ rawtext, content });
+        await this.textRepo.save(text);
+        return toTextDto(text);
     }
 
 
