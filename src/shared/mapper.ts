@@ -20,8 +20,8 @@ export const toStudyDto = (data: StudiesEntity): StudyDto => {
 };
 
 export const toTextDto = (data: TextEntity): TextDto => {  
-    const { id, content, rawtext } = data;
-    let textDto: TextDto = { id, content, rawtext };
+    const { id, content } = data;
+    let textDto: TextDto = { id, content };
     return textDto;
 };
 

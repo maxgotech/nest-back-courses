@@ -82,9 +82,9 @@ export class StudiesServices {
     }
 
     async createTextStudy(textDto: CreateTextDto): Promise<TextDto> {    
-        const { rawtext, content  } = textDto;
+        const { content  } = textDto;
         
-        const text: TextEntity = await this.textRepo.create({ rawtext, content });
+        const text: TextEntity = await this.textRepo.create({ content });
         await this.textRepo.save(text);
         return toTextDto(text);
     }

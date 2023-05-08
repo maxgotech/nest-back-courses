@@ -5,10 +5,8 @@ export class TextDto {
   @IsNotEmpty()
   id: number;
 
-  content: string;
-
   @IsNotEmpty()
-  rawtext: string;
+  content: string;
 
   createdAt?: Date;
 
