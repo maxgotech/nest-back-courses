@@ -89,5 +89,24 @@ export class StudiesServices {
         return toTextDto(text);
     }
 
+    async updateVideoStudy(videoDto: VideoDto): Promise<VideoDto> {    
+        const { id, path, length, size  } = videoDto;
+        await this.videoRepo.save({id:id,path:path,length:length,size:size});
+        const video = await this.videoRepo.findOne({where:{id}});
+        return toVideoDto(video);
+    }
+
+    async updateTextStudy(textDto: TextDto): Promise<TextDto> {    
+        const { id, content  } = textDto;
+        await this.textRepo.save({id:id,content:content});
+        const text = await this.textRepo.findOne({where:{id}});
+        return toTextDto(text);
+    }
+
+    async GetTextContent(textDto:TextDto): Promise<TextDto>{
+        const { id } = textDto;
+        const text = await this.textRepo.findOne({where:{id}});
+        return toTextDto(text);
+    }
 
 }

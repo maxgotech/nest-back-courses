@@ -4,6 +4,8 @@ import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
 import { CreateVideoDto } from '../dto/video/video-create.dto';
 import { CreateTextDto } from '../dto/text/text-create.dto';
+import { TextDto } from '../dto/text/text.dto';
+import { VideoDto } from '../dto/video/video.dto';
 
 @Controller('studies')
 
@@ -43,5 +45,20 @@ export class StudiesController{
     @Post('updateIdContent')
         public async updateIdContent(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyIdContent(studyDto);
+    }
+
+    @Post('updateTextContent')
+        public async updateTextContent(@Body() textDto:TextDto) {
+        return await this.studyService.updateTextStudy(textDto);
+    }
+
+    @Post('updateVideoContent')
+        public async updateVideoContent(@Body() videoDto:VideoDto) {
+        return await this.studyService.updateVideoStudy(videoDto);
+    }
+
+    @Post('getTextContent')
+        public async getTextContent(@Body() textDto:TextDto) {
+        return await this.studyService.GetTextContent(textDto);
     }
 }
