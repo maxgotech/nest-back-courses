@@ -13,13 +13,13 @@ export class StudiesController{
     constructor(private readonly studyService: StudiesServices) {}
 
     @Post('newstudy')  
-        public async StudyCreate(@Body() CreateStudyDto: CreateStudyDto) {
-        return await this.studyService.createStudy(CreateStudyDto);  
+        public async StudyCreate(@Body() createStudyDto: CreateStudyDto) {
+        return await this.studyService.createStudy(createStudyDto);  
     }
 
     @Post('newtextstudy')  
-        public async TextStudyCreate(@Body() CreateTextDto: CreateTextDto) {
-        return await this.studyService.createTextStudy(CreateTextDto);  
+        public async TextStudyCreate(@Body() createTextDto: CreateTextDto) {
+        return await this.studyService.createTextStudy(createTextDto);  
     }
 
     @Post('newvideostudy')  

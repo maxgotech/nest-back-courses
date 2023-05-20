@@ -1,3 +1,4 @@
+import { CourseModule } from './modules/courses/course.module';
 import { StudiesModule } from './modules/studies/studies.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
@@ -10,6 +11,7 @@ import DataOptions from './config/ormconfig';
 
 @Module({
   imports: [
+    CourseModule,
     StudiesModule,
     AuthModule,
     UserModule,
@@ -17,6 +19,6 @@ import DataOptions from './config/ormconfig';
     ConfigModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ AppService],
 })
 export class AppModule { }

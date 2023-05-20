@@ -6,6 +6,10 @@ import { TextEntity } from "src/modules/studies/model/text.entity";
 import { TextDto } from "src/modules/studies/dto/text/text.dto";
 import { VideoEntity } from "src/modules/studies/model/video.entity";
 import { VideoDto } from "src/modules/studies/dto/video/video.dto";
+import { CoursesEntity } from "src/modules/courses/model/course.entity";
+import { CourseDto } from "src/modules/courses/dto/course/course.dto";
+import { ModuleEntity } from "src/modules/courses/model/module.entity";
+import { ModuleDto } from "src/modules/courses/dto/module/module.dto";
 
 export const toUserDto = (data: UserEntity): UserDto => {  
     const { id, name, secondname, mail, about } = data;
@@ -29,4 +33,16 @@ export const toVideoDto = (data: VideoEntity): VideoDto => {
     const { id, path, length, size } = data;
     let videoDto: VideoDto = { id, path, length, size };
     return videoDto;
+};
+
+export const toCourseDto = (data: CoursesEntity): CourseDto => {  
+    const { id, name, price, id_createdBy } = data;
+    let courseDto: CourseDto = { id, name, price, id_createdBy };
+    return courseDto;
+};
+
+export const toModuleDto = (data: ModuleEntity): ModuleDto => {  
+    const { id, name, about } = data;
+    let moduleDto: ModuleDto = { id, name, about };
+    return moduleDto;
 };

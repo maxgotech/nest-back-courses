@@ -5,7 +5,7 @@ export class TextEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({nullable:false})
+    @Column({nullable:false,type:"mediumtext"})
     content:string;
 
     @CreateDateColumn()

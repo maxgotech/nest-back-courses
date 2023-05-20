@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { CoursesEntity } from "src/modules/courses/model/course.entity";
+import { ModuleEntity } from "src/modules/courses/model/module.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('study')
 export class StudiesEntity {
@@ -7,6 +9,12 @@ export class StudiesEntity {
 
     @Column({nullable:false})
     name:string;
+
+    @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id)
+    course: CoursesEntity
+
+    @ManyToOne((type) => ModuleEntity, (ModuleEntity) => ModuleEntity.id)
+    module: ModuleEntity
 
     @Column({nullable:true})
     id_content:number;
