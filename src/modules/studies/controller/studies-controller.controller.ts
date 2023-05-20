@@ -34,7 +34,7 @@ export class StudiesController{
 
     @Post('study')
         public async getStudy(@Body() studyDto:StudyDto) {
-        return await this.studyService.FindstudyByID(studyDto);
+        return await this.studyService.FindStudyByID(studyDto);
     }
 
     @Post('updateTypeContent')

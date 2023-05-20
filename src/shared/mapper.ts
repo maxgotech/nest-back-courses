@@ -42,7 +42,7 @@ export const toCourseDto = (data: CoursesEntity): CourseDto => {
 };
 
 export const toModuleDto = (data: ModuleEntity): ModuleDto => {  
-    const { id, name, about } = data;
-    let moduleDto: ModuleDto = { id, name, about };
+    const { id, name, about, course } = data;
+    let moduleDto: ModuleDto = {id, name, about, course};
     return moduleDto;
 };

@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { CoursesEntity } from '../../model/course.entity';
 
 export class CreateModuleDto {
 
@@ -7,5 +8,7 @@ export class CreateModuleDto {
 
   @IsNotEmpty()
   about:string;
+
+  course?:CoursesEntity;
   
 }

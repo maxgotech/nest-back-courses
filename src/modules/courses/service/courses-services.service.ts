@@ -18,18 +18,61 @@ export class CoursesService {
         ){}
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
-        const { name, about  } = moduleDto;
+        const { name, about, course } = moduleDto;
         
-        const module: ModuleEntity = await this.moduleRepo.create({ name, about });
+        const module: ModuleEntity = await this.moduleRepo.create({ name, about, course });
         await this.moduleRepo.save(module);
         return toModuleDto(module);
     }
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    
-        const { name, id_createdBy, price  } = courseDto;
+        const { name, id_createdBy, price,  } = courseDto;
         
         const course: CoursesEntity = await this.courseRepo.create({ name, id_createdBy, price });
         await this.courseRepo.save(course);
         return toCourseDto(course);
     }
+
+    async CoursesListByCreatorID({ id_createdBy }: CourseDto){
+        if (id_createdBy==null){
+            return;
+        } else {
+        const CoursesList = await this.courseRepo.find({ where: { id_createdBy } });
+        return CoursesList.reverse();
+    }
+    }
+
+    async FindCourseByID({id}:CourseDto){
+        if (id==null){
+            return;
+        } else {
+        const Course = await this.courseRepo.findOne({ where: { id } });
+        return toCourseDto(Course);
+    }
+    }
+    
+    async FindModuleByID({id}:ModuleDto){
+        if (id==null){
+            return;
+        } else {
+        const Study = await this.moduleRepo.findOne({ where: { id } });
+        return toModuleDto(Study);
+    }
+    }
+
+    async ModuleListByCourse({ id }:CourseDto){
+        if (id==null){
+            return;
+        } else {
+        const CoursesList = await this.courseRepo
+        .createQueryBuilder("course")
+        .leftJoinAndSelect("course.module","module")
+        .where({
+            "id":id
+        })
+        .getMany();
+        return CoursesList.reverse();
+    }
+    }
+
 }

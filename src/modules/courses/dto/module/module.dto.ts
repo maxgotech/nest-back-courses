@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { CoursesEntity } from '../../model/course.entity';
 
 export class ModuleDto {
 
@@ -10,6 +11,8 @@ export class ModuleDto {
 
   @IsNotEmpty()
   about: string;
+
+  course?:CoursesEntity;
 
   createdAt?: Date;
 

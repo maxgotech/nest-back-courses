@@ -50,7 +50,7 @@ export class StudiesServices {
         return StudyList.reverse();
     }
     }
-    async FindstudyByID({id}:StudyDto){
+    async FindStudyByID({id}:StudyDto){
         if (id==null){
             return;
         } else {
