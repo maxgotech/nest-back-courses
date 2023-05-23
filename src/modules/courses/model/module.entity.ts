@@ -17,7 +17,7 @@ export class ModuleEntity {
     @OneToMany((type) => StudiesEntity,(StudiesEntity) => StudiesEntity.module)
     study:StudiesEntity[];
 
-    @Column({nullable:false})
+    @Column({nullable:true})
     about:string;
 
     @CreateDateColumn()

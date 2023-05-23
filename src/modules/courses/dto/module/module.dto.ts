@@ -9,8 +9,7 @@ export class ModuleDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
-  about: string;
+  about?: string;
 
   course?:CoursesEntity;
 
