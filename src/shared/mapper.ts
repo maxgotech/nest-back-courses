@@ -18,8 +18,8 @@ export const toUserDto = (data: UserEntity): UserDto => {
 };
 
 export const toStudyDto = (data: StudiesEntity): StudyDto => {  
-    const { id, name, id_content,type_content, id_createdBy } = data;
-    let studyDto: StudyDto = { id, name, id_content, type_content , id_createdBy };
+    const { id, name, id_content,type_content, id_createdBy, course, module } = data;
+    let studyDto: StudyDto = { id, name, id_content, type_content , id_createdBy, course, module };
     return studyDto;
 };
 

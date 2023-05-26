@@ -50,6 +50,25 @@ export class StudiesServices {
         return StudyList.reverse();
     }
     }
+
+    async StudyListByModule({ id }){
+        if (id==null){
+            return;
+        } else {
+        const StudyListByModule = await this.studyRepo.find({
+            relations:{
+                module:true,
+            },
+            where:{
+                module:{
+                    id:id
+                }
+            }
+        });
+        return StudyListByModule;
+    }
+    }
+
     async FindStudyByID({id}:StudyDto){
         if (id==null){
             return;
@@ -70,6 +89,13 @@ export class StudiesServices {
         const { id, id_content  } = studyDto;
         await this.studyRepo.save({id:id,id_content:id_content})
         const Study = await this.studyRepo.findOne({ where: { id } });
+        return toStudyDto(Study);
+    }
+
+    async updateStudyCourseAndModule(studyDto: StudyDto): Promise<StudyDto> {    
+        const { id, course, module  } = studyDto;
+        await this.studyRepo.save({id:id,course:course,module:module})
+        const Study = await this.studyRepo.findOne({relations:['module','course'], where: { id } });
         return toStudyDto(Study);
     }
 

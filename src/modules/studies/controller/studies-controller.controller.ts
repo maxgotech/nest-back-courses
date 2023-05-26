@@ -32,6 +32,11 @@ export class StudiesController{
         return await this.studyService.StudyListByCreatorID(studyDto);
     }
 
+    @Post('studylistbymodule')
+        public async getStudiesByModule(@Body() id:any) {
+        return await this.studyService.StudyListByModule(id);
+    }
+
     @Post('study')
         public async getStudy(@Body() studyDto:StudyDto) {
         return await this.studyService.FindStudyByID(studyDto);
@@ -45,6 +50,11 @@ export class StudiesController{
     @Post('updateIdContent')
         public async updateIdContent(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyIdContent(studyDto);
+    }
+
+    @Post('updateCourseAndModule')
+        public async updateCourseAndModule(@Body() studyDto:StudyDto) {
+        return await this.studyService.updateStudyCourseAndModule(studyDto);
     }
 
     @Post('updateTextContent')
