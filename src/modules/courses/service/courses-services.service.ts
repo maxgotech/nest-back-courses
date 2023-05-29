@@ -40,7 +40,6 @@ export class CoursesService {
         } else {
             const CoursesList = await this.courseRepo
             .createQueryBuilder("course")
-            .leftJoinAndSelect("course.user","user")
             .where({
                 "user":user
             })
@@ -83,7 +82,7 @@ export class CoursesService {
     }
 
     async AllCourses(){
-        const CoursesList = await this.courseRepo.find();
+        const CoursesList = await this.courseRepo.find({relations:['user']});
         return CoursesList;
     }
 
