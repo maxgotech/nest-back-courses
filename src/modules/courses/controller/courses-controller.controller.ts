@@ -1,4 +1,4 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Get } from '@nestjs/common';
 import { CoursesService } from '../service/courses-services.service';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
@@ -38,6 +38,11 @@ export class CoursesController {
     @Post('findmodule')  
         public async FindModule(@Body() moduleDto: ModuleDto) {
         return await this.courseService.FindModuleByID(moduleDto);  
+    }
+
+    @Get('allcourses')
+        public async AllCourses(){
+        return await this.courseService.AllCourses();
     }
 
  }

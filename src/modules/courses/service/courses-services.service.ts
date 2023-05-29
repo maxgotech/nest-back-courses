@@ -26,18 +26,24 @@ export class CoursesService {
     }
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    
-        const { name, id_createdBy, price,  } = courseDto;
+        const { name, user, price,  } = courseDto;
         
-        const course: CoursesEntity = await this.courseRepo.create({ name, id_createdBy, price });
+        const course: CoursesEntity = await this.courseRepo.create({ name, user, price });
         await this.courseRepo.save(course);
         return toCourseDto(course);
     }
 
-    async CoursesListByCreatorID({ id_createdBy }: CourseDto){
-        if (id_createdBy==null){
+    async CoursesListByCreatorID({ user }: CourseDto){
+        if (user==null){
             return;
         } else {
-        const CoursesList = await this.courseRepo.find({ where: { id_createdBy } });
+            const CoursesList = await this.courseRepo
+            .createQueryBuilder("course")
+            .leftJoinAndSelect("course.user","user")
+            .where({
+                "id":user
+            })
+            .getMany();
         return CoursesList.reverse();
     }
     }
@@ -73,6 +79,11 @@ export class CoursesService {
         .getMany();
         return CoursesList.reverse();
     }
+    }
+
+    async AllCourses(){
+        const CoursesList = await this.courseRepo.find();
+        return CoursesList;
     }
 
 }

@@ -27,7 +27,7 @@ export class StudiesServices {
     }
 
     async createStudy(studyDto: CreateStudyDto): Promise<StudyDto> {    
-        const { name, id_createdBy  } = studyDto;
+        const { name, user  } = studyDto;
         
         // check if the study exists in the db    
         const studyInDb = await this.studyRepo.findOne({ 
@@ -37,16 +37,22 @@ export class StudiesServices {
             throw new HttpException('Study already exists', HttpStatus.BAD_REQUEST);    
         }
         
-        const study: StudiesEntity = await this.studyRepo.create({ name, id_createdBy });
+        const study: StudiesEntity = await this.studyRepo.create({ name, user });
         await this.studyRepo.save(study);
         return toStudyDto(study);
     }
 
-    async StudyListByCreatorID({ id_createdBy }: StudyDto){
-        if (id_createdBy==null){
+    async StudyListByCreatorID({ user }: StudyDto){
+        if (user==null){
             return;
         } else {
-        const StudyList = await this.studyRepo.find({ where: { id_createdBy } });
+            const StudyList = await this.studyRepo
+            .createQueryBuilder("study")
+            .leftJoinAndSelect("study.user","user")
+            .where({
+                "id":user
+            })
+            .getMany();
         return StudyList.reverse();
     }
     }

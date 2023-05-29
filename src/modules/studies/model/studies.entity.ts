@@ -1,5 +1,6 @@
 import { CoursesEntity } from "src/modules/courses/model/course.entity";
 import { ModuleEntity } from "src/modules/courses/model/module.entity";
+import { UserEntity } from "src/modules/user/model/user.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('study')
@@ -25,8 +26,9 @@ export class StudiesEntity {
     type_content:number;  // 1 - text
                           // 2 - video 
 
-    @Column({nullable:false})
-    id_createdBy:number;
+    @ManyToOne((type) => UserEntity, (UserEntity) => UserEntity.id)
+    @JoinColumn({name:'userid'})
+    user: UserEntity
 
     @CreateDateColumn()
     createdAt:Date;

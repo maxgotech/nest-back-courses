@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+import { UserEntity } from 'src/modules/user/model/user.entity';
 
 export class CreateStudyDto {
 
@@ -6,6 +7,6 @@ export class CreateStudyDto {
   name: string;
 
   @IsNotEmpty()
-  id_createdBy:number;
+  user:UserEntity;
   
 }

@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ModuleEntity } from "./module.entity";
 import { StudiesEntity } from "src/modules/studies/model/studies.entity";
+import { UserEntity } from "src/modules/user/model/user.entity";
 
 @Entity('course')
 export class CoursesEntity {
@@ -19,8 +20,9 @@ export class CoursesEntity {
     @Column({nullable:true})
     price:number;
 
-    @Column({nullable:false})
-    id_createdBy:number;
+    @ManyToOne((type) => UserEntity, (UserEntity) => UserEntity.id)
+    @JoinColumn({name:'userid'})
+    user: UserEntity
 
     @CreateDateColumn()
     createdAt:Date;
