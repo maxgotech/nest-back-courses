@@ -55,7 +55,7 @@ export class CoursesService {
         if (id==null){
             return;
         } else {
-        const Study = await this.moduleRepo.findOne({ where: { id } });
+        const Study = await this.moduleRepo.findOne({relations:['course'], where: { id } });
         return toModuleDto(Study);
     }
     }
