@@ -16,7 +16,6 @@ export class CoursesService {
     constructor( 
         @InjectRepository(ModuleEntity) private readonly moduleRepo: Repository<ModuleEntity>,
         @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>,
-        @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>
         ){}
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
