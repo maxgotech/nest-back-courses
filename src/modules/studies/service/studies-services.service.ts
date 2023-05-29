@@ -48,9 +48,8 @@ export class StudiesServices {
         } else {
             const StudyList = await this.studyRepo
             .createQueryBuilder("study")
-            .leftJoinAndSelect("study.user","user")
             .where({
-                "id":user
+                "user":user
             })
             .getMany();
         return StudyList.reverse();

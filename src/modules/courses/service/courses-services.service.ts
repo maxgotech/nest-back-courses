@@ -8,13 +8,15 @@ import { CoursesEntity } from '../model/course.entity';
 import { toModuleDto, toCourseDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CourseDto } from '../dto/course/course.dto';
+import { UserEntity } from 'src/modules/user/model/user.entity';
 
 @Injectable()
 export class CoursesService { 
 
     constructor( 
         @InjectRepository(ModuleEntity) private readonly moduleRepo: Repository<ModuleEntity>,
-        @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>
+        @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>,
+        @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>
         ){}
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
@@ -41,7 +43,7 @@ export class CoursesService {
             .createQueryBuilder("course")
             .leftJoinAndSelect("course.user","user")
             .where({
-                "id":user
+                "user":user
             })
             .getMany();
         return CoursesList.reverse();
