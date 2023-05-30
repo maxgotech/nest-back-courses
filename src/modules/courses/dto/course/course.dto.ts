@@ -11,8 +11,7 @@ export class CourseDto {
 
   price?: number;
 
-  @IsNotEmpty()
-  image_path: string;
+  image_path?: string;
 
   @IsNotEmpty()
   user: UserEntity;

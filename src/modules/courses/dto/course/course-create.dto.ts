@@ -11,7 +11,6 @@ export class CreateCourseDto {
 
   price?: number;
   
-  @IsNotEmpty()
-  image_path:string;
+  image_path?:string;
   
 }

@@ -11,7 +11,7 @@ export class CoursesEntity {
     @Column({nullable:false})
     name:string;
 
-    @Column({nullable:false,default:'https://blog.coursify.me/wp-content/uploads/2019/09/online-education-coursifyme.jpg'})
+    @Column({nullable:true,default:'https://blog.coursify.me/wp-content/uploads/2019/09/online-education-coursifyme.jpg'})
     image_path:string;
 
     @OneToMany((type)=>ModuleEntity,(ModuleEntity)=>ModuleEntity.course)
