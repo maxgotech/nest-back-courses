@@ -36,8 +36,8 @@ export const toVideoDto = (data: VideoEntity): VideoDto => {
 };
 
 export const toCourseDto = (data: CoursesEntity): CourseDto => {  
-    const { id, name, price, user } = data;
-    let courseDto: CourseDto = { id, name, price, user };
+    const { id, name, price, user, image_path } = data;
+    let courseDto: CourseDto = { id, name, price, user, image_path };
     return courseDto;
 };
 

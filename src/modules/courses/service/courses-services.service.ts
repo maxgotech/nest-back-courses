@@ -27,9 +27,9 @@ export class CoursesService {
     }
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    
-        const { name, user, price,  } = courseDto;
+        const { name, user, price, image_path  } = courseDto;
         
-        const course: CoursesEntity = await this.courseRepo.create({ name, user, price });
+        const course: CoursesEntity = await this.courseRepo.create({ name, user, price, image_path });
         await this.courseRepo.save(course);
         return toCourseDto(course);
     }
