@@ -73,11 +73,12 @@ export class CoursesService {
         const CoursesList = await this.courseRepo
         .createQueryBuilder("course")
         .leftJoinAndSelect("course.module","module")
+        .leftJoinAndSelect("module.study","study")
         .where({
             "id":id
         })
         .getMany();
-        return CoursesList.reverse();
+        return CoursesList;
     }
     }
 
