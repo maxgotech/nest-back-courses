@@ -72,6 +72,7 @@ export class CoursesService {
         } else {
         const CoursesList = await this.courseRepo
         .createQueryBuilder("course")
+         .leftJoinAndSelect("course.user","user")
         .leftJoinAndSelect("course.module","module")
         .leftJoinAndSelect("module.study","study")
         .where({
