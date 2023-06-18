@@ -18,7 +18,7 @@ export class UserEntity {
     @Column({nullable:false})
     secondname:string;
 
-    @Column({nullable:true})
+    @Column({nullable:true,type:"text"})
     about:string;
 
     @CreateDateColumn()

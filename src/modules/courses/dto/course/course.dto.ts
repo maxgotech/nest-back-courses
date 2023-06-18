@@ -1,5 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { UserEntity } from 'src/modules/user/model/user.entity';
+import { CourseDescriptionEntity } from '../../model/coursedesc.entity';
 
 export class CourseDto {
 
@@ -8,6 +9,8 @@ export class CourseDto {
 
   @IsNotEmpty()
   name: string;
+
+  coursedesc:CourseDescriptionEntity
 
   price?: number;
 

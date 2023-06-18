@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ModuleEntity } from "./module.entity";
 import { StudiesEntity } from "src/modules/studies/model/studies.entity";
 import { UserEntity } from "src/modules/user/model/user.entity";
+import { CourseDescriptionEntity } from "./coursedesc.entity";
 
 @Entity('course')
 export class CoursesEntity {
@@ -10,6 +11,9 @@ export class CoursesEntity {
 
     @Column({nullable:false})
     name:string;
+
+    @OneToOne(()=>CourseDescriptionEntity,(CourseDescriptionEntity)=>CourseDescriptionEntity.course)
+    coursedesc:CourseDescriptionEntity;
 
     @Column({nullable:true,default:'https://blog.coursify.me/wp-content/uploads/2019/09/online-education-coursifyme.jpg'})
     image_path:string;

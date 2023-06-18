@@ -10,6 +10,8 @@ import { CoursesEntity } from "src/modules/courses/model/course.entity";
 import { CourseDto } from "src/modules/courses/dto/course/course.dto";
 import { ModuleEntity } from "src/modules/courses/model/module.entity";
 import { ModuleDto } from "src/modules/courses/dto/module/module.dto";
+import { CourseDescriptionEntity } from "src/modules/courses/model/coursedesc.entity";
+import { CourseDescDto } from "src/modules/courses/dto/coursedesc/coursedesc.dto";
 
 export const toUserDto = (data: UserEntity): UserDto => {  
     const { id, name, secondname, mail, about } = data;
@@ -36,13 +38,19 @@ export const toVideoDto = (data: VideoEntity): VideoDto => {
 };
 
 export const toCourseDto = (data: CoursesEntity): CourseDto => {  
-    const { id, name, price, user, image_path } = data;
-    let courseDto: CourseDto = { id, name, price, user, image_path };
+    const { id, name, price, user, image_path, coursedesc } = data;
+    let courseDto: CourseDto = { id, name, price, user, image_path, coursedesc };
     return courseDto;
 };
 
 export const toModuleDto = (data: ModuleEntity): ModuleDto => {  
     const { id, name, about, course } = data;
-    let moduleDto: ModuleDto = {id, name, about, course};
+    let moduleDto: ModuleDto = {id, name, about, course };
     return moduleDto;
+};
+
+export const toCourseDescDto = (data: CourseDescriptionEntity): CourseDescDto => {  
+    const { id, course, learn, req, about, audience } = data;
+    let coursedescDto: CourseDescDto = { id, course ,  learn, req, about, audience };
+    return coursedescDto;
 };

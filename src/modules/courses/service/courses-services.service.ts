@@ -5,10 +5,13 @@ import { ModuleEntity } from '../model/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CoursesEntity } from '../model/course.entity';
-import { toModuleDto, toCourseDto } from 'src/shared/mapper';
+import { toModuleDto, toCourseDto, toCourseDescDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CourseDto } from '../dto/course/course.dto';
-import { UserEntity } from 'src/modules/user/model/user.entity';
+import { CreateCourseDescDto } from '../dto/coursedesc/coursedesc-create.dto';
+import { CourseDescDto } from '../dto/coursedesc/coursedesc.dto';
+import { CourseDescriptionEntity } from '../model/coursedesc.entity';
+
 
 @Injectable()
 export class CoursesService { 
@@ -16,6 +19,7 @@ export class CoursesService {
     constructor( 
         @InjectRepository(ModuleEntity) private readonly moduleRepo: Repository<ModuleEntity>,
         @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>,
+        @InjectRepository(CourseDescriptionEntity) private readonly coursedescRepo: Repository<CourseDescriptionEntity>
         ){}
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
@@ -32,6 +36,14 @@ export class CoursesService {
         const course: CoursesEntity = await this.courseRepo.create({ name, user, price, image_path });
         await this.courseRepo.save(course);
         return toCourseDto(course);
+    }
+
+    async createCourseDesc(coursedescDto: CreateCourseDescDto): Promise<CourseDescDto> {    
+        const {course, learn, req, about, audience } = coursedescDto;
+        
+        const coursedesc: CourseDescriptionEntity = await this.coursedescRepo.create({ course, learn, req, about, audience });
+        await this.coursedescRepo.save(coursedesc);
+        return toCourseDescDto(coursedesc);
     }
 
     async CoursesListByCreatorID({ user }: CourseDto){
@@ -52,7 +64,7 @@ export class CoursesService {
         if (id==null){
             return;
         } else {
-        const Course = await this.courseRepo.findOne({ where: { id } });
+        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { id } });
         return toCourseDto(Course);
     }
     }
