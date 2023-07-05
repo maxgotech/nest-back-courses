@@ -39,12 +39,21 @@ export class CoursesService {
     }
 
     async createCourseDesc(coursedescDto: CreateCourseDescDto): Promise<CourseDescDto> {    
-        const {course, learn, req, about, audience } = coursedescDto;
+        const {course, shortabout, learn, req, about, audience } = coursedescDto;
         
-        const coursedesc: CourseDescriptionEntity = await this.coursedescRepo.create({ course, learn, req, about, audience });
+        const coursedesc: CourseDescriptionEntity = await this.coursedescRepo.create({ course,shortabout, learn, req, about, audience });
         await this.coursedescRepo.save(coursedesc);
         return toCourseDescDto(coursedesc);
     }
+
+    async UpdateCourseDesc(coursedescDto: CourseDescDto): Promise<CourseDescDto> {    
+        const {id, course, shortabout, learn, req, about, audience } = coursedescDto;
+
+        await this.coursedescRepo.save({id:id,course:course,shortabout:shortabout,learn:learn,req:req,about:about,audience:audience});
+        const coursedesc = await this.coursedescRepo.findOne({where:{id}})
+        return toCourseDescDto(coursedesc);
+    }
+    
 
     async CoursesListByCreatorID({ user }: CourseDto){
         if (user==null){
@@ -60,7 +69,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByID({id}:CourseDto){
+    async FindCourseByID({id}:CourseDto){ //возвращает лишнюю информацию пользователя
         if (id==null){
             return;
         } else {

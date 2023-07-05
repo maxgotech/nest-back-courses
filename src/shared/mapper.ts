@@ -50,7 +50,7 @@ export const toModuleDto = (data: ModuleEntity): ModuleDto => {
 };
 
 export const toCourseDescDto = (data: CourseDescriptionEntity): CourseDescDto => {  
-    const { id, course, learn, req, about, audience } = data;
-    let coursedescDto: CourseDescDto = { id, course ,  learn, req, about, audience };
+    const { id, course, shortabout, learn, req, about, audience } = data;
+    let coursedescDto: CourseDescDto = { id, course ,shortabout, learn, req, about, audience };
     return coursedescDto;
 };

@@ -4,6 +4,8 @@ export class CreateCourseDescDto {
 
   course?:CoursesEntity;
 
+  shortabout:string;
+
   learn:string;
 
   req:string;

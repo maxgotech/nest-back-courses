@@ -11,6 +11,9 @@ export class CourseDescriptionEntity {
     course:CoursesEntity;
 
     @Column({nullable:false,type:"text"})
+    shortabout:string;
+
+    @Column({nullable:false,type:"text"})
     learn:string;
 
     @Column({nullable:false,type:"text"})

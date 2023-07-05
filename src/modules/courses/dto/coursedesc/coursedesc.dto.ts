@@ -8,6 +8,8 @@ export class CourseDescDto {
 
   course?:CoursesEntity
 
+  shortabout:string;
+
   learn:string;
 
   req:string;
