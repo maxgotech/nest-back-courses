@@ -1,23 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CoursesEntity } from '../model/course.entity';
-import { toModuleDto, toCourseDto, toCourseDescDto } from 'src/shared/mapper';
+import { toModuleDto, toCourseDto, toCourseDescDto, toStudyDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CourseDto } from '../dto/course/course.dto';
 import { CreateCourseDescDto } from '../dto/coursedesc/coursedesc-create.dto';
 import { CourseDescDto } from '../dto/coursedesc/coursedesc.dto';
 import { CourseDescriptionEntity } from '../model/coursedesc.entity';
-
+import { StudiesEntity } from 'src/modules/studies/model/studies.entity';
 
 @Injectable()
 export class CoursesService { 
 
     constructor( 
         @InjectRepository(ModuleEntity) private readonly moduleRepo: Repository<ModuleEntity>,
+        @InjectRepository(StudiesEntity) private readonly studyRepo: Repository<StudiesEntity>,
         @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>,
         @InjectRepository(CourseDescriptionEntity) private readonly coursedescRepo: Repository<CourseDescriptionEntity>
         ){}
@@ -28,6 +29,29 @@ export class CoursesService {
         const module: ModuleEntity = await this.moduleRepo.create({ name, about, course });
         await this.moduleRepo.save(module);
         return toModuleDto(module);
+    }
+
+    async deleteModule(moduleDto: ModuleDto) {    
+        const { id  } = moduleDto;
+        
+        // check if the study exists in the db    
+        const moduleInDb = await this.moduleRepo.findOne({ 
+            where: { id } 
+        });
+        if (!moduleInDb) {
+            throw new HttpException('module not found', HttpStatus.BAD_REQUEST);    
+        }
+
+        const CleanStudies = await this.studyRepo
+        .createQueryBuilder()
+        .update(StudiesEntity)
+        .set({module:null})
+        .where("module = :module",{ module:id})
+        .execute()
+
+        await this.moduleRepo.remove(moduleInDb);
+
+        return ('module '+ id + ' deleted');
     }
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    

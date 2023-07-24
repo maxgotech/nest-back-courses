@@ -71,7 +71,7 @@ export class StudiesServices {
     }
     }
 
-    async StudyListByModule({ id }){
+    async StudyListByModule({ id }){ //выводить не занятия с модулями а модуль с занятиями (исправить)
         if (id==null){
             return;
         } else {

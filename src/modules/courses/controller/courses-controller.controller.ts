@@ -32,6 +32,11 @@ export class CoursesController {
         return await this.courseService.createModule(createModuleDto);  
     }
 
+    @Post('deletemodule')  
+        public async ModuleDelete(@Body() ModuleDto: ModuleDto) {
+        return await this.courseService.deleteModule(ModuleDto);  
+    }
+
     @Post('courselist')  
         public async CourseList(@Body() courseDto: CourseDto) {
         return await this.courseService.CoursesListByCreatorID(courseDto);  
