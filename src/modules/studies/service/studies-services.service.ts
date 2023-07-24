@@ -42,6 +42,21 @@ export class StudiesServices {
         return toStudyDto(study);
     }
 
+    async deleteStudy(studyDto: StudyDto) {    
+        const { id  } = studyDto;
+        
+        // check if the study exists in the db    
+        const studyInDb = await this.studyRepo.findOne({ 
+            where: { id } 
+        });
+        if (!studyInDb) {
+            throw new HttpException('Study not found', HttpStatus.BAD_REQUEST);    
+        }
+        await this.studyRepo.remove(studyInDb);
+
+        return ('study '+ id + ' deleted');
+    }
+
     async StudyListByCreatorID({ user }: StudyDto){
         if (user==null){
             return;

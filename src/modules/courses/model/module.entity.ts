@@ -10,7 +10,7 @@ export class ModuleEntity {
     @Column({nullable:false})
     name:string;
 
-    @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id)
+    @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id, { onDelete: 'CASCADE' })
     @JoinColumn({name:'courseid'})
     course:CoursesEntity;
 

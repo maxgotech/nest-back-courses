@@ -17,6 +17,11 @@ export class StudiesController{
         return await this.studyService.createStudy(createStudyDto);  
     }
 
+    @Post('deletestudy')
+        public async deleteStudy(@Body() studyDto:StudyDto) {
+        return await this.studyService.deleteStudy(studyDto);
+    }
+
     @Post('newtextstudy')  
         public async TextStudyCreate(@Body() createTextDto: CreateTextDto) {
         return await this.studyService.createTextStudy(createTextDto);  
