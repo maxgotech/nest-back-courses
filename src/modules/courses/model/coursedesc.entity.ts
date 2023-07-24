@@ -6,7 +6,7 @@ export class CourseDescriptionEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(()=> CoursesEntity,(CoursesEntity)=>CoursesEntity.coursedesc)
+    @OneToOne(()=> CoursesEntity,(CoursesEntity)=>CoursesEntity.coursedesc, { onDelete: "CASCADE" })
     @JoinColumn({name:'course'})
     course:CoursesEntity;
 

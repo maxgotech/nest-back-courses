@@ -17,6 +17,11 @@ export class CoursesController {
         return await this.courseService.createCourse(createCourseDto);  
     }
 
+    @Post('deletecourse')  
+        public async CourseDelete(@Body() courseDto: CourseDto) {
+        return await this.courseService.deleteCourse(courseDto);  
+    }
+
     @Post('newcoursedesc')  
         public async CourseDescCreate(@Body() createCourseDescDto: CreateCourseDescDto) {
         return await this.courseService.createCourseDesc(createCourseDescDto);  

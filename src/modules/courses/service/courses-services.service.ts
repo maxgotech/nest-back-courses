@@ -62,6 +62,28 @@ export class CoursesService {
         return toCourseDto(course);
     }
 
+    async deleteCourse(courseDto: CourseDto) {    
+        const { id  } = courseDto;
+        
+        // check if the study exists in the db    
+        const courseInDb = await this.courseRepo.findOne({ 
+            where: { id } 
+        });
+        if (!courseInDb) {
+            throw new HttpException('course not found', HttpStatus.BAD_REQUEST);    
+        }
+
+        const CleanStudies = await this.studyRepo
+        .createQueryBuilder()
+        .where("course = :course",{course:id})
+        .update(StudiesEntity)
+        .set({module:null,course:null})
+        .execute()
+
+        await this.courseRepo.remove(courseInDb);
+        return ('course '+ id + ' deleted');
+    }
+
     async createCourseDesc(coursedescDto: CreateCourseDescDto): Promise<CourseDescDto> {    
         const {course, shortabout, learn, req, about, audience } = coursedescDto;
         
@@ -115,16 +137,16 @@ export class CoursesService {
         if (id==null){
             return;
         } else {
-        const CoursesList = await this.courseRepo
+        const ModuleList = await this.courseRepo
         .createQueryBuilder("course")
-         .leftJoinAndSelect("course.user","user")
+        .leftJoinAndSelect("course.user","user")
         .leftJoinAndSelect("course.module","module")
         .leftJoinAndSelect("module.study","study")
         .where({
             "id":id
         })
         .getMany();
-        return CoursesList;
+        return ModuleList;
     }
     }
 
