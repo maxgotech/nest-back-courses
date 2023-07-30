@@ -54,7 +54,7 @@ export class StudiesServices {
         }
         await this.studyRepo.remove(studyInDb);
 
-        return ('study '+ id + ' deleted');
+        return toStudyDto(studyInDb);
     }
 
     async StudyListByCreatorID({ user }: StudyDto){
