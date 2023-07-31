@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Body, Post, UseInterceptors, UploadedFile, BadRequestException, Get, Param, Res } from '@nestjs/common';
 import { StudiesServices } from '../service/studies-services.service';
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
@@ -8,6 +8,7 @@ import { TextDto } from '../dto/text/text.dto';
 import { VideoDto } from '../dto/video/video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { Response } from 'express';
 
 @Controller('studies')
 
@@ -99,6 +100,22 @@ export class StudiesController{
         }
     }))
     uploadPicture(@UploadedFile() file: Express.Multer.File){
-        console.log(file)
+        if(!file){
+            throw new BadRequestException("File is not an image")
+        } else {
+            const image = {
+                success: 1,
+                file:{
+                    url: 'http://localhost:3000/studies/images/' + file.filename
+                }
+            };
+            return image
+        }
     }
+
+    @Get('images/:filename')
+    async getImage(@Param('filename') filename, @Res() res:Response) {
+        res.sendFile(filename, {root:'./uploads'});
+    }
+
 }
