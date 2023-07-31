@@ -1,4 +1,4 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { StudiesServices } from '../service/studies-services.service';
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
@@ -6,6 +6,8 @@ import { CreateVideoDto } from '../dto/video/video-create.dto';
 import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
 import { VideoDto } from '../dto/video/video.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller('studies')
 
@@ -75,5 +77,28 @@ export class StudiesController{
     @Post('getTextContent')
         public async getTextContent(@Body() textDto:TextDto) {
         return await this.studyService.GetTextContent(textDto);
+    }
+
+    @Post('picload')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './uploads',
+            filename:(req,file,cb) => {
+                const name = file.originalname.split(".")[0];
+                const fileExtension = file.originalname.split(".").pop();
+                const newFileName  = name.split(" ").join('_')+ '_' +Date.now()+ "." +fileExtension;
+
+                cb(null, newFileName);
+            },
+        }),
+        fileFilter:( req, file, cb) => {
+            if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+                return cb(null, false);
+            }
+            cb(null,true);
+        }
+    }))
+    uploadPicture(@UploadedFile() file: Express.Multer.File){
+        console.log(file)
     }
 }
