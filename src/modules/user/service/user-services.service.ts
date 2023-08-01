@@ -7,7 +7,7 @@ import { toUserDto } from 'src/shared/mapper';
 import { LoginUserDto } from '../dto/user-login.dto';
 import { CreateUserDto } from '../dto/user-create.dto';
 import { comparePasswords } from 'src/shared/utils';
-
+import { CreateUserFolderDto } from '../dto/user-images.dto';
 
 @Injectable()
 export class UserService {
@@ -64,6 +64,20 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         }
         
         return toUserDto(user);  
+    }
+
+    async createUserFolder(createUserFolder:CreateUserFolderDto){
+        const fs = require('fs');
+        const folderName = "users/" + createUserFolder.name;
+
+        try {
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+        }
+        } catch (err) {
+        console.error(err);
+        }
+        return folderName
     }
 
 }
