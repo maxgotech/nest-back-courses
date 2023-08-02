@@ -83,12 +83,15 @@ export class StudiesController{
     @Post('picload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
-            destination: './uploads',
+            destination:(req,file,cb) => {
+                const usermail= file.originalname.split('*')[0];
+                cb(null,'./users/'+usermail + '/');
+            },
             filename:(req,file,cb) => {
-                const name = file.originalname.split(".")[0];
-                const fileExtension = file.originalname.split(".").pop();
-                const newFileName  = name.split(" ").join('_')+ '_' +Date.now()+ "." +fileExtension;
-
+                const nameOrigin = file.originalname.split("*")[1];
+                const name = nameOrigin.split(".")[0];
+                const fileExtension = nameOrigin.split(".").pop();
+                const newFileName  = name.split(" ").join('_')+ '.' +fileExtension;
                 cb(null, newFileName);
             },
         }),
@@ -106,16 +109,11 @@ export class StudiesController{
             const image = {
                 success: 1,
                 file:{
-                    url: 'http://localhost:3000/studies/images/' + file.filename
+                    url: 'http://localhost:3000/user/images/' + file.originalname.split('*')[0] +'/' + file.filename
                 }
             };
             return image
         }
-    }
-
-    @Get('images/:filename')
-    async getImage(@Param('filename') filename, @Res() res:Response) {
-        res.sendFile(filename, {root:'./uploads'});
     }
 
 }
