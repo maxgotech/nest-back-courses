@@ -21,8 +21,8 @@ export class UserEntity {
     @Column({nullable:true,type:"text"})
     about:string;
 
-    @Column({nullable:false,default:"users/default/default.png"})
-    avatar_path:string;
+    @Column({nullable:false,default:"/default/default.jpg"})
+    pfp_path:string;
 
     @CreateDateColumn()
     createdAt:Date;

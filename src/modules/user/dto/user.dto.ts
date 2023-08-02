@@ -16,6 +16,8 @@ export class UserDto {
 
   about: string;
 
+  pfp_path:string
+
   createdAt?: Date;
 
   updatedAt?: Date;
