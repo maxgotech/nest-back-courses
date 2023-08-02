@@ -7,7 +7,7 @@ import { toUserDto } from 'src/shared/mapper';
 import { LoginUserDto } from '../dto/user-login.dto';
 import { CreateUserDto } from '../dto/user-create.dto';
 import { comparePasswords } from 'src/shared/utils';
-import { CreateUserFolderDto } from '../dto/user-images.dto';
+import { CreateUserFolderDto } from '../dto/user-folder.dto';
 
 @Injectable()
 export class UserService {

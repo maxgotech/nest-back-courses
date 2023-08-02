@@ -12,6 +12,8 @@ import { ModuleEntity } from "src/modules/courses/model/module.entity";
 import { ModuleDto } from "src/modules/courses/dto/module/module.dto";
 import { CourseDescriptionEntity } from "src/modules/courses/model/coursedesc.entity";
 import { CourseDescDto } from "src/modules/courses/dto/coursedesc/coursedesc.dto";
+import { CreateUserFolderDto } from "src/modules/user/dto/user-folder.dto";
+import { CreateUserDto } from "src/modules/user/dto/user-create.dto";
 
 export const toUserDto = (data: UserEntity): UserDto => {  
     const { id, name, secondname, mail, about } = data;
@@ -54,3 +56,9 @@ export const toCourseDescDto = (data: CourseDescriptionEntity): CourseDescDto =>
     let coursedescDto: CourseDescDto = { id, course ,shortabout, learn, req, about, audience };
     return coursedescDto;
 };
+
+export const CreateUserDtoToUserFolderDto = (data:CreateUserDto): CreateUserFolderDto =>{
+    const { mail} = data;
+    let folderName:CreateUserFolderDto = {name:mail};
+    return folderName;
+}

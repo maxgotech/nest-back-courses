@@ -8,6 +8,8 @@ import { UserDto } from 'src/modules/user/dto/user.dto';
 import { LoginUserDto } from 'src/modules/user/dto/user-login.dto';
 import { JwtPayload } from '../interfaces/payload.interface';
 import * as dotenv from 'dotenv';
+import { CreateUserFolderDto } from 'src/modules/user/dto/user-folder.dto';
+import { CreateUserDtoToUserFolderDto } from 'src/shared/mapper';
 dotenv.config();
 
 @Injectable()
@@ -28,6 +30,7 @@ export class AuthService {
             message: err,
         };    
     }
+    await this.usersService.createUserFolder(CreateUserDtoToUserFolderDto(userDto));
     return status;  
 }
 
