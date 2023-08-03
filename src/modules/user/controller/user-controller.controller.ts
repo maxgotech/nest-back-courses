@@ -15,6 +15,11 @@ export class UserController {
         return await this.userService.UserDatabyMail(UserDto);  
     }
 
+    @Post('updateuser')
+    public async UpdateUserData(@Body() UserDto: UserDto): Promise<UserDto> {
+        return await this.userService.UpdateUserData(UserDto);
+    }
+
     @Post('pfpload')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -38,6 +43,7 @@ export class UserController {
         }
     }))
     uploadPicture(@UploadedFile() file: Express.Multer.File){
+        console.log(file)
         if(!file){
             throw new BadRequestException("File is not an image")
         } else {
@@ -51,8 +57,8 @@ export class UserController {
         }
     }
 
-    @Get('images/:username/:filename')
-    async getImage(@Param('filename') filename, @Param('username') username , @Res() res:Response) {
-        res.sendFile(filename, {root:'./users/'+ username});
+    @Get('images/:usermail/:filename')
+    async getImage(@Param('filename') filename, @Param('usermail') usermail , @Res() res:Response) {
+        res.sendFile(filename, {root:'./users/'+ usermail});
     }
 }

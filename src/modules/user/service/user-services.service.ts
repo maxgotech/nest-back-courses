@@ -66,6 +66,13 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         return toUserDto(user);  
     }
 
+    async UpdateUserData(userDto:UserDto): Promise<UserDto>{
+        const {id, name, secondname, about, pfp_path} = userDto;
+        await this.userRepo.save({id:id,name:name,secondname:secondname,about:about,pfp_path:pfp_path});
+        const user = await this.userRepo.findOne({where:{id}})
+        return toUserDto(user);
+    }
+
     async createUserFolder(createUserFolder:CreateUserFolderDto){
         const fs = require('fs');
         const folderName = "users/" + createUserFolder.name;
