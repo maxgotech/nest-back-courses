@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseInterceptors, UploadedFile, BadRequestException, Get, Param, Res } from '@nestjs/common';
+import { Controller, Body, Post, UseInterceptors, UploadedFile, Get, Param, Res, Headers } from '@nestjs/common';
 import { StudiesServices } from '../service/studies-services.service';
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
@@ -81,39 +81,47 @@ export class StudiesController{
     }
 
     @Post('picload')
-    @UseInterceptors(FileInterceptor('file', {
+    @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({
             destination:(req,file,cb) => {
-                const usermail= file.originalname.split('*')[0];
-                cb(null,'./users/'+usermail + '/');
+                cb(null,'./assets/studies/study_'+ req.headers.study + '/');
             },
             filename:(req,file,cb) => {
-                const nameOrigin = file.originalname.split("*")[1];
-                const name = nameOrigin.split(".")[0];
-                const fileExtension = nameOrigin.split(".").pop();
-                const newFileName  = name.split(" ").join('_')+ '.' +fileExtension;
+                const name = file.originalname.split(".")[0];
+                const fileExtension = file.originalname.split(".").pop();
+                const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
                 cb(null, newFileName);
             },
         }),
         fileFilter:( req, file, cb) => {
-            if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+            if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
                 return cb(null, false);
             }
             cb(null,true);
         }
     }))
-    uploadPicture(@UploadedFile() file: Express.Multer.File){
+    public async uploadPicture(@UploadedFile() file: Express.Multer.File,@Headers() headers){
         if(!file){
-            throw new BadRequestException("File is not an image")
+            const image = {
+                success: 0,
+                error: "File is not an image"
+            }
+            return image
         } else {
             const image = {
                 success: 1,
                 file:{
-                    url: 'http://localhost:3000/user/images/' + file.originalname.split('*')[0] +'/' + file.filename
+                    url: 'http://localhost:3000/studies/' + headers.study + '/images/' + file.filename
                 }
             };
             return image
         }
+    }
+
+    @Get(':studyid/images/:filename')
+    async getImage(@Param('filename') filename, @Param('studyid') studyid , @Res() res:Response) {
+        console.log(filename)
+        res.sendFile(filename, {root:'./assets/studies/study_'+ studyid});
     }
 
 }

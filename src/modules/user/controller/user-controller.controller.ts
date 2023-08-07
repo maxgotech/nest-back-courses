@@ -20,18 +20,19 @@ export class UserController {
         return await this.userService.UpdateUserData(UserDto);
     }
 
+
     @Post('pfpload')
-    @UseInterceptors(FileInterceptor('file', {
+    @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({
             destination:(req,file,cb) => {
                 const usermail= file.originalname.split('*')[0];
-                cb(null,'./users/'+usermail + '/');
+                cb(null,'./assets/users/'+usermail + '/');
             },
             filename:(req,file,cb) => {
                 const nameOrigin = file.originalname.split("*")[1];
                 const name = nameOrigin.split(".")[0];
                 const fileExtension = nameOrigin.split(".").pop();
-                const newFileName  = name.split(" ").join('_')+ '.' +fileExtension;
+                const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
                 cb(null, newFileName);
             },
         }),
@@ -59,6 +60,6 @@ export class UserController {
 
     @Get('images/:usermail/:filename')
     async getImage(@Param('filename') filename, @Param('usermail') usermail , @Res() res:Response) {
-        res.sendFile(filename, {root:'./users/'+ usermail});
+        res.sendFile(filename, {root:'./assets/users/'+ usermail});
     }
 }
