@@ -75,7 +75,7 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
 
     async createUserFolder(createUserFolder:CreateUserFolderDto){
         const fs = require('fs');
-        const folderName = "users/" + createUserFolder.name;
+        const folderName = "assets/users/" + createUserFolder.name;
 
         try {
         if (!fs.existsSync(folderName)) {

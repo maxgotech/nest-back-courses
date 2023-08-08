@@ -80,6 +80,15 @@ export class StudiesController{
         return await this.studyService.GetTextContent(textDto);
     }
 
+    @Post('debug')
+        public async devug() {
+        const error = {
+            success:0,
+            error:"debug"
+        }
+        return error
+    }
+
     @Post('picload')
     @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({

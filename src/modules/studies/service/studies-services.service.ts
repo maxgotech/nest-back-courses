@@ -11,6 +11,7 @@ import { VideoEntity } from '../model/video.entity';
 import { TextEntity } from '../model/text.entity';
 import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
+import { CreateStudyFolderDto } from '../dto/study/study-folder.dto';
 
 @Injectable()
 export class StudiesServices { 
@@ -39,6 +40,7 @@ export class StudiesServices {
         
         const study: StudiesEntity = await this.studyRepo.create({ name, user });
         await this.studyRepo.save(study);
+        await this.createStudyFolder(study); //создание папки
         return toStudyDto(study);
     }
 
@@ -153,6 +155,20 @@ export class StudiesServices {
         const { id } = textDto;
         const text = await this.textRepo.findOne({where:{id}});
         return toTextDto(text);
+    }
+
+    async createStudyFolder(createStudyFolder:CreateStudyFolderDto){
+        const fs = require('fs');
+        const folderName = "assets/studies/study_" + createStudyFolder.id;
+
+        try {
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+        }
+        } catch (err) {
+        console.error(err);
+        }
+        return folderName
     }
 
 }

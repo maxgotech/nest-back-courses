@@ -30,7 +30,7 @@ export class AuthService {
             message: err,
         };    
     }
-    await this.usersService.createUserFolder(CreateUserDtoToUserFolderDto(userDto));
+    await this.usersService.createUserFolder(CreateUserDtoToUserFolderDto(userDto)); //создание папки
     return status;  
 }
 
