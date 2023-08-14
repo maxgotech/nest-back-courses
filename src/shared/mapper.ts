@@ -63,9 +63,3 @@ export const CreateUserDtoToUserFolderDto = (data:CreateUserDto): CreateUserFold
     let folderName:CreateUserFolderDto = {name:mail};
     return folderName;
 }
-
-export const CreateStudyDtoToStudyFolderDto = (data:StudyDto): CreateStudyFolderDto =>{
-    const { id} = data;
-    let folderName:CreateStudyFolderDto = {id:id};
-    return folderName;
-}
