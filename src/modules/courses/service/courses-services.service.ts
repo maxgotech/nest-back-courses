@@ -126,7 +126,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByID({id}:CourseDto){ //возвращает лишнюю информацию пользователя
+    async FindCourseByID({id}:CourseDto){ //возвращает лишнюю информацию 
         if (id==null){
             return;
         } else {

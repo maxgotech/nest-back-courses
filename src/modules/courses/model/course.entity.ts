@@ -15,7 +15,7 @@ export class CoursesEntity {
     @OneToOne(()=>CourseDescriptionEntity,(CourseDescriptionEntity)=>CourseDescriptionEntity.course, { onDelete: "CASCADE" })
     coursedesc:CourseDescriptionEntity;
 
-    @Column({nullable:true,default:'https://blog.coursify.me/wp-content/uploads/2019/09/online-education-coursifyme.jpg'})
+    @Column({nullable:true,default:'/default/course-default.png'})
     image_path:string;
 
     @OneToMany((type)=>ModuleEntity,(ModuleEntity)=>ModuleEntity.course)

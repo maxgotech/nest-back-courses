@@ -114,7 +114,7 @@ export class CoursesController {
 
     @Get('images/:courseid/:filename')
     async getImage(@Param('filename') filename, @Param('courseid') courseid , @Res() res:Response) {
-        res.sendFile(filename, {root:'./assets/courses/course_'+ courseid});
+        res.sendFile(filename, {root:'./assets/courses/'+ courseid});
     }
 
  }
