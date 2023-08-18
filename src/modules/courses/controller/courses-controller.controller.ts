@@ -7,8 +7,9 @@ import { ModuleDto } from '../dto/module/module.dto';
 import { CreateCourseDescDto } from '../dto/coursedesc/coursedesc-create.dto';
 import { CourseDescDto } from '../dto/coursedesc/coursedesc.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { Response } from 'express';
+import { CourseImagesStorage } from 'src/shared/storages';
+import { ImageFilter } from 'src/shared/filters';
 
 @Controller('courses')
 export class CoursesController {
@@ -77,27 +78,11 @@ export class CoursesController {
 
     @Post('coursepic')
     @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination:(req,file,cb) => {
-                const courseid= file.originalname.split('*')[0];
-                cb(null,'./assets/courses/course_'+courseid + '/');
-            },
-            filename:(req,file,cb) => {
-                const nameOrigin = file.originalname.split("*")[1];
-                const name = nameOrigin.split(".")[0];
-                const fileExtension = nameOrigin.split(".").pop();
-                const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
-                cb(null, newFileName);
-            },
-        }),
-        fileFilter:( req, file, cb) => {
-            if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-                return cb(null, false);
-            }
-            cb(null,true);
-        }
+        storage: CourseImagesStorage,
+        fileFilter: ImageFilter
     }))
     uploadPicture(@UploadedFile() file: Express.Multer.File){
+        
         console.log(file)
         if(!file){
             throw new BadRequestException("File is not an image")

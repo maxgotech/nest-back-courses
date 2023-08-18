@@ -9,6 +9,8 @@ import { VideoDto } from '../dto/video/video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
+import { StudyImageStorage } from 'src/shared/storages';
+import { ImageFilter } from 'src/shared/filters';
 
 @Controller('studies')
 
@@ -91,23 +93,8 @@ export class StudiesController{
 
     @Post('picload')
     @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination:(req,file,cb) => {
-                cb(null,'./assets/studies/study_'+ req.headers.study + '/');
-            },
-            filename:(req,file,cb) => {
-                const name = file.originalname.split(".")[0];
-                const fileExtension = file.originalname.split(".").pop();
-                const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
-                cb(null, newFileName);
-            },
-        }),
-        fileFilter:( req, file, cb) => {
-            if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-                return cb(null, false);
-            }
-            cb(null,true);
-        }
+        storage: StudyImageStorage,
+        fileFilter:ImageFilter
     }))
     public async uploadPicture(@UploadedFile() file: Express.Multer.File,@Headers() headers){
         if(!file){

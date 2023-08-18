@@ -4,6 +4,8 @@ import { UserDto } from '../dto/user.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { UserImageStorage } from 'src/shared/storages';
+import { ImageFilter } from 'src/shared/filters';
 
 @Controller('user')
 export class UserController { 
@@ -23,25 +25,8 @@ export class UserController {
 
     @Post('pfpload')
     @UseInterceptors(FileInterceptor('image', {
-        storage: diskStorage({
-            destination:(req,file,cb) => {
-                const usermail= file.originalname.split('*')[0];
-                cb(null,'./assets/users/'+usermail + '/');
-            },
-            filename:(req,file,cb) => {
-                const nameOrigin = file.originalname.split("*")[1];
-                const name = nameOrigin.split(".")[0];
-                const fileExtension = nameOrigin.split(".").pop();
-                const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
-                cb(null, newFileName);
-            },
-        }),
-        fileFilter:( req, file, cb) => {
-            if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-                return cb(null, false);
-            }
-            cb(null,true);
-        }
+        storage: UserImageStorage,
+        fileFilter:ImageFilter
     }))
     uploadPicture(@UploadedFile() file: Express.Multer.File){
         console.log(file)
