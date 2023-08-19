@@ -7,7 +7,6 @@ import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
 import { VideoDto } from '../dto/video/video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { Response } from 'express';
 import { StudyImageStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';

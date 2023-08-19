@@ -3,7 +3,6 @@ import { UserService } from '../service/user-services.service';
 import { UserDto } from '../dto/user.dto';
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
 import { UserImageStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';
 
@@ -21,7 +20,6 @@ export class UserController {
     public async UpdateUserData(@Body() UserDto: UserDto): Promise<UserDto> {
         return await this.userService.UpdateUserData(UserDto);
     }
-
 
     @Post('pfpload')
     @UseInterceptors(FileInterceptor('image', {

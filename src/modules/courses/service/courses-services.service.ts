@@ -144,12 +144,13 @@ export class CoursesService {
     }
     }
 
-    async ModuleListByCourse({ id }:CourseDto){
+    async ModuleListByCourse({ id }:CourseDto){ //возвращает лишнюю информацию 
         if (id==null){
             return;
         } else {
         const ModuleList = await this.courseRepo
         .createQueryBuilder("course")
+        .leftJoinAndSelect("course.coursedesc","coursedesc")
         .leftJoinAndSelect("course.user","user")
         .leftJoinAndSelect("course.module","module")
         .leftJoinAndSelect("module.study","study")
