@@ -5,7 +5,7 @@ import { ModuleEntity } from '../model/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CoursesEntity } from '../model/course.entity';
-import { toModuleDto, toCourseDto, toCourseDescDto, toStudyDto } from 'src/shared/mapper';
+import { toModuleDto, toCourseDto, toCourseDescDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CourseDto } from '../dto/course/course.dto';
 import { CreateCourseDescDto } from '../dto/coursedesc/coursedesc-create.dto';
@@ -35,7 +35,7 @@ export class CoursesService {
     async deleteModule(moduleDto: ModuleDto) {    
         const { id  } = moduleDto;
         
-        // check if the study exists in the db    
+        // check if the module exists in the db    
         const moduleInDb = await this.moduleRepo.findOne({ 
             where: { id } 
         });

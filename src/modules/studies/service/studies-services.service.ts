@@ -171,4 +171,16 @@ export class StudiesServices {
         return folderName
     }
 
+    async FindStudyByTypeAndID({id,type_content}:StudyDto){
+        if (id==null){
+            return;
+        } else if(type_content==1) {
+            const text = await this.textRepo.findOne({ where: { id } });
+            return text;
+        } else if(type_content==2) {
+            const video = await this.videoRepo.findOne({ where: { id } });
+            return video;
+        }
+    }
+
 }

@@ -51,6 +51,11 @@ export class StudiesController{
         return await this.studyService.FindStudyByID(studyDto);
     }
 
+    @Post('studybytype')
+    public async getStudybyType(@Body() studyDto:StudyDto) {
+    return await this.studyService.FindStudyByTypeAndID(studyDto);
+}
+
     @Post('updateTypeContent')
         public async updateTypeContent(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyTypeContent(studyDto);
