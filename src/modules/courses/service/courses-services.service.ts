@@ -67,7 +67,11 @@ export class CoursesService {
     async UpdateCourse(courseDto: CourseDto): Promise<CourseDto> {    
         const {id, name, price, image_path } = courseDto;
 
-        await this.courseRepo.save({id:id,name:name,price:price,image_path:image_path});
+        await this.courseRepo.createQueryBuilder()
+        .update()
+        .set({name:name, price:price, image_path:image_path})
+        .where("id=:id",{id:id})
+        .execute()
         const course = await this.courseRepo.findOne({where:{id}})
         return toCourseDto(course);
     }
@@ -106,7 +110,11 @@ export class CoursesService {
     async UpdateCourseDesc(coursedescDto: CourseDescDto): Promise<CourseDescDto> {    
         const {id, course, shortabout, learn, req, about, audience } = coursedescDto;
 
-        await this.coursedescRepo.save({id:id,course:course,shortabout:shortabout,learn:learn,req:req,about:about,audience:audience});
+        await this.coursedescRepo.createQueryBuilder()
+        .update()
+        .set({course:course, shortabout:shortabout, learn:learn, req:req, about:about, audience:audience})
+        .where("id=:id",{id:id})
+        .execute()
         const coursedesc = await this.coursedescRepo.findOne({where:{id}})
         return toCourseDescDto(coursedesc);
     }

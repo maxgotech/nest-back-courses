@@ -102,21 +102,33 @@ export class StudiesServices {
 
     async updateStudyTypeContent(studyDto: StudyDto): Promise<StudyDto> {    
         const { id, type_content  } = studyDto;
-        await this.studyRepo.save({id:id,type_content:type_content})
+        await this.studyRepo.createQueryBuilder()
+        .update()
+        .set({type_content:type_content})
+        .where("id=:id",{id:id})
+        .execute()
         const Study = await this.studyRepo.findOne({ where: { id } });
         return toStudyDto(Study);
     }
 
     async updateStudyIdContent(studyDto: StudyDto): Promise<StudyDto> {    
         const { id, id_content  } = studyDto;
-        await this.studyRepo.save({id:id,id_content:id_content})
+        await this.studyRepo.createQueryBuilder()
+        .update()
+        .set({id_content:id_content})
+        .where("id=:id",{id:id})
+        .execute()
         const Study = await this.studyRepo.findOne({ where: { id } });
         return toStudyDto(Study);
     }
 
     async updateStudyCourseAndModule(studyDto: StudyDto): Promise<StudyDto> {    
         const { id, course, module  } = studyDto;
-        await this.studyRepo.save({id:id,course:course,module:module})
+        await this.studyRepo.createQueryBuilder()
+        .update()
+        .set({course:course, module:module})
+        .where("id=:id",{id:id})
+        .execute()
         const Study = await this.studyRepo.findOne({relations:['module','course'], where: { id } });
         return toStudyDto(Study);
     }
@@ -139,14 +151,22 @@ export class StudiesServices {
 
     async updateVideoStudy(videoDto: VideoDto): Promise<VideoDto> {    
         const { id, path, length, size  } = videoDto;
-        await this.videoRepo.save({id:id,path:path,length:length,size:size});
+        await this.videoRepo.createQueryBuilder()
+        .update()
+        .set({path:path, length:length, size:size})
+        .where("id=:id",{id:id})
+        .execute()
         const video = await this.videoRepo.findOne({where:{id}});
         return toVideoDto(video);
     }
 
     async updateTextStudy(textDto: TextDto): Promise<TextDto> {    
         const { id, content  } = textDto;
-        await this.textRepo.save({id:id,content:content});
+        await this.textRepo.createQueryBuilder()
+        .update()
+        .set({content:content})
+        .where("id=:id",{id:id})
+        .execute()
         const text = await this.textRepo.findOne({where:{id}});
         return toTextDto(text);
     }

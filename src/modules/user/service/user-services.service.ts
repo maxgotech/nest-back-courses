@@ -68,7 +68,11 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
 
     async UpdateUserData(userDto:UserDto): Promise<UserDto>{
         const {id, name, secondname, about, pfp_path} = userDto;
-        await this.userRepo.save({id:id,name:name,secondname:secondname,about:about,pfp_path:pfp_path});
+        await this.userRepo.createQueryBuilder()
+        .update()
+        .set({name:name, secondname:secondname, about:about, pfp_path:pfp_path})
+        .where("id=:id",{id:id})
+        .execute()
         const user = await this.userRepo.findOne({where:{id}})
         return toUserDto(user);
     }
