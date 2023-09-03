@@ -87,13 +87,17 @@ export class StudiesController{
     }
 
     @Post('debug')
-        public async devug() {
+        public async test(){
+        return await this.studyService.test()
+        }
+        /* public async debug(@Headers() headers) {
         const error = {
             success:0,
             error:"debug"
         }
+        console.log(headers)
         return error
-    }
+    } */
 
     @Post('picload')
     @UseInterceptors(FileInterceptor('image', {

@@ -3,7 +3,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateVideoDto {
     
   @IsNotEmpty()
-  path: string;
+  id_video: string;
   
   length: string;
   

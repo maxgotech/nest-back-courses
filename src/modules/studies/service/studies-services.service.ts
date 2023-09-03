@@ -12,6 +12,7 @@ import { TextEntity } from '../model/text.entity';
 import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
 import { CreateStudyFolderDto } from '../dto/study/study-folder.dto';
+import { response } from 'express';
 
 @Injectable()
 export class StudiesServices { 
@@ -134,9 +135,9 @@ export class StudiesServices {
     }
 
     async createVideoStudy(videoDto: CreateVideoDto): Promise<VideoDto> {    
-        const { path, length, size  } = videoDto;
+        const { id_video, length, size  } = videoDto;
         
-        const video: VideoEntity = await this.videoRepo.create({ path, length,size });
+        const video: VideoEntity = await this.videoRepo.create({ id_video, length,size });
         await this.videoRepo.save(video);
         return toVideoDto(video);
     }
@@ -150,10 +151,10 @@ export class StudiesServices {
     }
 
     async updateVideoStudy(videoDto: VideoDto): Promise<VideoDto> {    
-        const { id, path, length, size  } = videoDto;
+        const { id, id_video, length, size  } = videoDto;
         await this.videoRepo.createQueryBuilder()
         .update()
-        .set({path:path, length:length, size:size})
+        .set({id_video:id_video, length:length, size:size})
         .where("id=:id",{id:id})
         .execute()
         const video = await this.videoRepo.findOne({where:{id}});
@@ -201,6 +202,17 @@ export class StudiesServices {
             const video = await this.videoRepo.findOne({ where: { id } });
             return video;
         }
+    }
+
+    async test(){
+        return fetch('https://api.kinescope.io/v1/projects?per_page=100',
+        {method:'GET',
+        headers:{
+            'Authorization':'Bearer ba52ddc9-7645-4bd5-8d81-ad697e06b5f7'
+        }})
+        .then(response =>response.json())
+        .then(response => console.log(response))
+		.catch(err => console.error(err));
     }
 
 }

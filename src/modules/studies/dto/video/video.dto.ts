@@ -6,7 +6,7 @@ export class VideoDto {
   id: number;
 
   @IsNotEmpty()
-  path: string;
+  id_video: string;
 
   length: string;
 

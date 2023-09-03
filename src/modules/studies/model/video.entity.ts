@@ -6,7 +6,7 @@ export class VideoEntity {
     id: number;
 
     @Column({nullable:false})
-    path:string;
+    id_video:string;
 
     @Column({})
     length:string;
