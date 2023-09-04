@@ -9,7 +9,8 @@ import { VideoDto } from '../dto/video/video.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { StudyImageStorage } from 'src/shared/storages';
-import { ImageFilter } from 'src/shared/filters';
+import { ImageFilter, VideoFilter } from 'src/shared/filters';
+import fetch, { RequestInit } from 'node-fetch'
 
 @Controller('studies')
 
@@ -89,15 +90,38 @@ export class StudiesController{
     @Post('debug')
         public async test(){
         return await this.studyService.test()
+    }
+
+    @Post('videoupload')
+    @UseInterceptors(FileInterceptor('video', {
+        fileFilter:VideoFilter
+    }))
+        public async videoupload(@UploadedFile() file: Express.Multer.File){
+            if(!file){
+                const video = {
+                    success: 0,
+                    error: "File is not a video"
+                }
+                return video
+            } else {
+                return fetch('https://uploader.kinescope.io/v2/video',
+                    {method:'POST',
+                    headers:{
+                        'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN,
+                        'X-Parent-ID': process.env.API_KINESCOPE_PARENT_ID,
+                        'X-Video-Title':file.originalname,
+                        'X-File-Name': file.originalname,
+                        'X-VIdeo-Description': 'desc'
+                    },
+                    body:file.buffer
+                    })
+                    .then(response =>response.json())
+                    .then(response => {
+                        return response
+                    })
+                    .catch(err => console.error(err));
+            }
         }
-        /* public async debug(@Headers() headers) {
-        const error = {
-            success:0,
-            error:"debug"
-        }
-        console.log(headers)
-        return error
-    } */
 
     @Post('picload')
     @UseInterceptors(FileInterceptor('image', {
