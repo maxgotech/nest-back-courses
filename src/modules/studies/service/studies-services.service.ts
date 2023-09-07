@@ -135,9 +135,9 @@ export class StudiesServices {
     }
 
     async createVideoStudy(videoDto: CreateVideoDto): Promise<VideoDto> {    
-        const { id_video, length, size  } = videoDto;
+        const { id_video } = videoDto;
         
-        const video: VideoEntity = await this.videoRepo.create({ id_video, length,size });
+        const video: VideoEntity = await this.videoRepo.create({ id_video });
         await this.videoRepo.save(video);
         return toVideoDto(video);
     }
@@ -151,10 +151,10 @@ export class StudiesServices {
     }
 
     async updateVideoStudy(videoDto: VideoDto): Promise<VideoDto> {    
-        const { id, id_video, length, size  } = videoDto;
+        const { id, id_video } = videoDto;
         await this.videoRepo.createQueryBuilder()
         .update()
-        .set({id_video:id_video, length:length, size:size})
+        .set({id_video:id_video})
         .where("id=:id",{id:id})
         .execute()
         const video = await this.videoRepo.findOne({where:{id}});
@@ -177,6 +177,25 @@ export class StudiesServices {
         const text = await this.textRepo.findOne({where:{id}});
         return toTextDto(text);
     }
+
+    async GetVideoContent(videoDto:VideoDto){
+        const { id } = videoDto;
+        const video = await this.videoRepo.findOne({where:{id}});
+
+        return fetch('https://api.kinescope.io/v1/videos/'+video.id_video,
+        {method:'GET',
+        headers:{
+            'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN
+        }})
+        .then(response =>response.json())
+        .then(response => {
+            return  {
+                video_link:response.data.assets[0].url
+            }
+        })
+		.catch(err => console.error(err));
+    }
+    
 
     async createStudyFolder(createStudyFolder:CreateStudyFolderDto){
         const fs = require('fs');

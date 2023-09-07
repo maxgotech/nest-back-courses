@@ -10,7 +10,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { StudyImageStorage } from 'src/shared/storages';
 import { ImageFilter, VideoFilter } from 'src/shared/filters';
-import fetch, { RequestInit } from 'node-fetch'
 
 @Controller('studies')
 
@@ -85,6 +84,11 @@ export class StudiesController{
     @Post('getTextContent')
         public async getTextContent(@Body() textDto:TextDto) {
         return await this.studyService.GetTextContent(textDto);
+    }
+
+    @Post('getVideoContent')
+        public async getVideoContent(@Body() videoDto:VideoDto) {
+        return await this.studyService.GetVideoContent(videoDto);
     }
 
     @Post('debug')

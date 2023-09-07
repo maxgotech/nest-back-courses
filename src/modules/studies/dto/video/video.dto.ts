@@ -8,10 +8,6 @@ export class VideoDto {
   @IsNotEmpty()
   id_video: string;
 
-  length: string;
-
-  size: number;
-
   createdAt?: Date;
 
   updatedAt?: Date;

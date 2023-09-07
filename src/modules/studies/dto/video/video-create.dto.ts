@@ -4,9 +4,5 @@ export class CreateVideoDto {
     
   @IsNotEmpty()
   id_video: string;
-  
-  length: string;
-  
-  size: number;
 
 }

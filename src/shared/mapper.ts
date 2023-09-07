@@ -35,8 +35,8 @@ export const toTextDto = (data: TextEntity): TextDto => {
 };
 
 export const toVideoDto = (data: VideoEntity): VideoDto => {  
-    const { id, id_video, length, size } = data;
-    let videoDto: VideoDto = { id, id_video, length, size };
+    const { id, id_video } = data;
+    let videoDto: VideoDto = { id, id_video };
     return videoDto;
 };
 

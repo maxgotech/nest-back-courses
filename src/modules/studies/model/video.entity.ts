@@ -8,12 +8,6 @@ export class VideoEntity {
     @Column({nullable:false})
     id_video:string;
 
-    @Column({})
-    length:string;
-
-    @Column({})
-    size:number;
-
     @CreateDateColumn()
     createdAt:Date;
 
