@@ -219,7 +219,18 @@ export class StudiesServices {
             return text;
         } else if(type_content==2) {
             const video = await this.videoRepo.findOne({ where: { id } });
-            return video;
+            return fetch('https://api.kinescope.io/v1/videos/'+video.id_video,
+            {method:'GET',
+            headers:{
+                'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN
+            }})
+            .then(response =>response.json())
+            .then(response => {
+                return  {
+                    video_link:response.data.embed_link
+                }
+            })
+            .catch(err => console.error(err));
         }
     }
 
