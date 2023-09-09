@@ -12,7 +12,8 @@ import { TextEntity } from '../model/text.entity';
 import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
 import { CreateStudyFolderDto } from '../dto/study/study-folder.dto';
-import { response } from 'express';
+import { kinescopefolder } from '../dto/video/video-folder.dto';
+
 
 @Injectable()
 export class StudiesServices { 
@@ -29,19 +30,15 @@ export class StudiesServices {
     }
 
     async createStudy(studyDto: CreateStudyDto): Promise<StudyDto> {    
-        const { name, user  } = studyDto;
-        
-        // check if the study exists in the db    
-        const studyInDb = await this.studyRepo.findOne({ 
-            where: { name } 
-        });
-        if (studyInDb) {
-            throw new HttpException('Study already exists', HttpStatus.BAD_REQUEST);    
-        }
-        
+        const { name, user  } = studyDto;        
         const study: StudiesEntity = await this.studyRepo.create({ name, user });
         await this.studyRepo.save(study);
         await this.createStudyFolder(study); //создание папки
+        await this.createKinescopeFolder(study)
+        .then((response:kinescopefolder) =>{
+            study.id_kinescope_folder = response.id
+        })
+        await this.updateStudyFolderId(study)
         return toStudyDto(study);
     }
 
@@ -99,6 +96,17 @@ export class StudiesServices {
         const Study = await this.studyRepo.findOne({ where: { id } });
         return toStudyDto(Study);
     }
+    }
+
+    async updateStudyFolderId(studyDto: StudyDto): Promise<StudyDto> {    
+        const { id, id_kinescope_folder  } = studyDto;
+        await this.studyRepo.createQueryBuilder()
+        .update()
+        .set({id_kinescope_folder:id_kinescope_folder})
+        .where("id=:id",{id:id})
+        .execute()
+        const Study = await this.studyRepo.findOne({ where: { id } });
+        return toStudyDto(Study);
     }
 
     async updateStudyTypeContent(studyDto: StudyDto): Promise<StudyDto> {    
@@ -209,6 +217,28 @@ export class StudiesServices {
         console.error(err);
         }
         return folderName
+    }
+
+    async createKinescopeFolder(createStudyFolder:CreateStudyFolderDto){
+        const folderName = "study_" + createStudyFolder.id;
+        const data = {
+            'name': folderName
+        }
+        return fetch('https://api.kinescope.io/v1/projects/'+process.env.API_KINESCOPE_PARENT_ID+'/folders',
+            {method:'POST',
+            headers:{
+                'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN
+            },
+            body:JSON.stringify(data)
+            })
+            .then(response =>response.json())
+            .then(response => {
+                return  {
+                    name:response.data.name,
+                    id:response.data.id
+                }
+            })
+            .catch(err => console.error(err));
     }
 
     async FindStudyByTypeAndID({id,type_content}:StudyDto){

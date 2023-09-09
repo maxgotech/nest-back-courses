@@ -14,7 +14,6 @@ import { CourseDescriptionEntity } from "src/modules/courses/model/coursedesc.en
 import { CourseDescDto } from "src/modules/courses/dto/coursedesc/coursedesc.dto";
 import { CreateUserFolderDto } from "src/modules/user/dto/user-folder.dto";
 import { CreateUserDto } from "src/modules/user/dto/user-create.dto";
-import { CreateStudyFolderDto } from "src/modules/studies/dto/study/study-folder.dto";
 
 export const toUserDto = (data: UserEntity): UserDto => {  
     const { id, name, secondname, mail, about, pfp_path } = data;
@@ -23,8 +22,8 @@ export const toUserDto = (data: UserEntity): UserDto => {
 };
 
 export const toStudyDto = (data: StudiesEntity): StudyDto => {  
-    const { id, name, id_content,type_content, user, course, module } = data;
-    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module };
+    const { id, name, id_content,type_content, user, course, module, id_kinescope_folder } = data;
+    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module, id_kinescope_folder };
     return studyDto;
 };
 

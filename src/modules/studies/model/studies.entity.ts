@@ -23,6 +23,9 @@ export class StudiesEntity {
     id_content:number;
 
     @Column({nullable:true})
+    id_kinescope_folder:string;
+
+    @Column({nullable:true})
     type_content:number;  // 1 - text
                           // 2 - video 
 

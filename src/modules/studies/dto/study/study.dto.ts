@@ -15,6 +15,8 @@ export class StudyDto {
 
   type_content:number;
 
+  id_kinescope_folder:string;
+
   @IsNotEmpty()
   user: UserEntity;
 
