@@ -108,13 +108,24 @@ export class StudiesController{
                 }
                 return video
             } else {
-                return fetch('https://uploader.kinescope.io/v2/video',
+                const id:StudyDto = {
+                    id: Number(file.originalname.split("*")[0]),
+                    name: null,
+                    id_content: null,
+                    type_content: null,
+                    id_kinescope_folder: null,
+                    user: null,
+                    course: null,
+                    module: null
+                }
+                const Study = await this.studyService.FindStudyByID(id)
+                return await fetch('https://uploader.kinescope.io/v2/video',
                     {method:'POST',
                     headers:{
                         'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN,
-                        'X-Parent-ID': process.env.API_KINESCOPE_PARENT_ID,
-                        'X-Video-Title':file.originalname,
-                        'X-File-Name': file.originalname,
+                        'X-Parent-ID': Study.id_kinescope_folder,
+                        'X-Video-Title':file.originalname.split("*")[1],
+                        'X-File-Name': file.originalname.split("*")[1],
                         'X-VIdeo-Description': 'desc'
                     },
                     body:file.buffer
