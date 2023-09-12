@@ -160,6 +160,19 @@ export class StudiesServices {
 
     async updateVideoStudy(videoDto: VideoDto): Promise<VideoDto> {    
         const { id, id_video } = videoDto;
+        const videoStudy = await this.videoRepo.findOne({where:{id}});
+        await fetch('https://api.kinescope.io/v1/videos/'+videoStudy.id_video,
+        {method:'DELETE',
+        headers:{
+            'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN
+        },
+        })
+        .then(response =>response.json())
+        .then(response => {
+            console.log(response)
+        })
+        .catch(err => console.error(err));
+        
         await this.videoRepo.createQueryBuilder()
         .update()
         .set({id_video:id_video})
