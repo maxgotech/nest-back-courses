@@ -26,8 +26,7 @@ export class UserController {
         storage: UserImageStorage,
         fileFilter:ImageFilter
     }))
-    uploadPicture(@UploadedFile() file: Express.Multer.File){
-        console.log(file)
+    public async uploadPicture(@UploadedFile() file: Express.Multer.File){
         if(!file){
             throw new BadRequestException("File is not an image")
         } else {

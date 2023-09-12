@@ -8,6 +8,7 @@ import { LoginUserDto } from '../dto/user-login.dto';
 import { CreateUserDto } from '../dto/user-create.dto';
 import { comparePasswords } from 'src/shared/utils';
 import { CreateUserFolderDto } from '../dto/user-folder.dto';
+const fs = require('fs');
 
 @Injectable()
 export class UserService {
@@ -78,9 +79,7 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
     }
 
     async createUserFolder(createUserFolder:CreateUserFolderDto){
-        const fs = require('fs');
         const folderName = "assets/users/" + createUserFolder.name;
-
         try {
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
