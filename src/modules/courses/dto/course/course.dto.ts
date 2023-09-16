@@ -10,6 +10,9 @@ export class CourseDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNotEmpty()
+  translit: string;
+
   coursedesc:CourseDescriptionEntity
 
   price?: number;

@@ -12,6 +12,9 @@ export class CoursesEntity {
     @Column({nullable:false})
     name:string;
 
+    @Column({nullable:false})
+    translit:string;
+
     @OneToOne(()=>CourseDescriptionEntity,(CourseDescriptionEntity)=>CourseDescriptionEntity.course, { onDelete: "CASCADE" })
     coursedesc:CourseDescriptionEntity;
 

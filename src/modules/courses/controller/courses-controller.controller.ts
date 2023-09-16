@@ -56,9 +56,14 @@ export class CoursesController {
         return await this.courseService.CoursesListByCreatorID(courseDto);  
     }
 
-    @Post('findcourse')  
+    @Post('findcoursebyid')  
         public async FundCourse(@Body() courseDto: CourseDto) {
         return await this.courseService.FindCourseByID(courseDto);  
+    }
+
+    @Post('findcoursebytranslit')  
+        public async FundCourseByTranslit(@Body() courseDto: CourseDto) {
+        return await this.courseService.FindCourseByTranslit(courseDto);  
     }
 
     @Post('modulelist')  

@@ -13,6 +13,8 @@ import { CourseDescDto } from '../dto/coursedesc/coursedesc.dto';
 import { CourseDescriptionEntity } from '../model/coursedesc.entity';
 import { StudiesEntity } from 'src/modules/studies/model/studies.entity';
 import { CreateCourseFolderDto } from '../dto/course/course-folder.dto';
+import { Translit } from 'src/shared/utils';
+
 
 @Injectable()
 export class CoursesService { 
@@ -57,8 +59,10 @@ export class CoursesService {
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    
         const { name, user, price, image_path  } = courseDto;
+
+        const translit = await Translit(name)
         
-        const course: CoursesEntity = await this.courseRepo.create({ name, user, price, image_path });
+        const course: CoursesEntity = await this.courseRepo.create({ name,translit, user, price, image_path });
         await this.courseRepo.save(course);
         this.createCourseFolder(course);
         return toCourseDto(course);
@@ -67,9 +71,11 @@ export class CoursesService {
     async UpdateCourse(courseDto: CourseDto): Promise<CourseDto> {    
         const {id, name, price, image_path } = courseDto;
 
+        const translit = await Translit(name)
+
         await this.courseRepo.createQueryBuilder()
         .update()
-        .set({name:name, price:price, image_path:image_path})
+        .set({name:name, translit:translit, price:price, image_path:image_path})
         .where("id=:id",{id:id})
         .execute()
         const course = await this.courseRepo.findOne({where:{id}})
@@ -142,6 +148,16 @@ export class CoursesService {
         return toCourseDto(Course);
     }
     }
+
+    async FindCourseByTranslit({translit}:CourseDto){ //возвращает лишнюю информацию 
+        if (translit==null){
+            return;
+        } else {
+        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { translit } });
+        return toCourseDto(Course);
+    }
+    }
+    
     
     async FindModuleByID({id}:ModuleDto){
         if (id==null){

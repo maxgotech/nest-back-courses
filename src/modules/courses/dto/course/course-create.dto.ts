@@ -7,6 +7,9 @@ export class CreateCourseDto {
   name: string;
 
   @IsNotEmpty()
+  translit: string;
+
+  @IsNotEmpty()
   user:UserEntity;
 
   price?: number;
