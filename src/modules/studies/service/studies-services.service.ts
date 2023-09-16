@@ -13,7 +13,7 @@ import { CreateTextDto } from '../dto/text/text-create.dto';
 import { TextDto } from '../dto/text/text.dto';
 import { CreateStudyFolderDto } from '../dto/study/study-folder.dto';
 import { kinescopefolder } from '../dto/video/video-folder.dto';
-
+const fs = require('fs');
 
 @Injectable()
 export class StudiesServices { 
@@ -275,6 +275,20 @@ export class StudiesServices {
             })
             .catch(err => console.error(err));
         }
+    }
+
+    async DeleteStudyImage({path}){
+       const id = path.split('/')[4]
+       const name =  path.split('/')[6]
+       const dir = './assets/studies/study_'+ id + '/' + name
+       await fs.unlink(dir, (err) => {
+        if (err) {
+            throw err;
+        }
+        console.log("Delete File successfully.");
+        });
+
+       return ({'deleted':dir})
     }
 
     async test(){

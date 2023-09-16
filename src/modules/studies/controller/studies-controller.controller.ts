@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseInterceptors, UploadedFile, Get, Param, Res, Headers } from '@nestjs/common';
+import { Controller, Body, Post, UseInterceptors, UploadedFile, Get, Param, Res, Headers, Delete } from '@nestjs/common';
 import { StudiesServices } from '../service/studies-services.service';
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
@@ -161,9 +161,13 @@ export class StudiesController{
         }
     }
 
+    @Delete('StudyImageDelete')
+        public async StudyImageDelete(@Body() path:any) {
+        return await this.studyService.DeleteStudyImage(path);
+    }
+
     @Get(':studyid/images/:filename')
     async getImage(@Param('filename') filename, @Param('studyid') studyid , @Res() res:Response) {
-        console.log(filename)
         res.sendFile(filename, {root:'./assets/studies/study_'+ studyid});
     }
 
