@@ -191,6 +191,37 @@ export class CoursesService {
         return CoursesList;
     }
 
+    async filterfind(date:string,price:string){
+        const from = price.split('/')[0]
+        const to = price.split('/')[1]
+
+        let dateorder
+
+        if (date=='newer'){
+            dateorder = 'DESC'
+        } else
+            dateorder = "ASC"
+
+        const CoursesList = await this.courseRepo
+        .createQueryBuilder("course")
+        .leftJoinAndSelect("course.user","user")
+        .orderBy("course.createdAt", dateorder)
+        .where(
+            'course.price >= :price',
+            {
+              price: from,
+            }
+        )
+        .andWhere(
+            'course.price <= :to',
+            {
+              to: to,
+            }
+        )
+        .getMany();
+        return CoursesList
+    }
+
     async createCourseFolder(createCourseFolder:CreateCourseFolderDto){
         const fs = require('fs');
         const folderName = "assets/courses/course_" + createCourseFolder.id;
