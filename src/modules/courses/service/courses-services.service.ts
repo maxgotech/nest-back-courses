@@ -14,6 +14,10 @@ import { CourseDescriptionEntity } from '../model/coursedesc.entity';
 import { StudiesEntity } from 'src/modules/studies/model/studies.entity';
 import { CreateCourseFolderDto } from '../dto/course/course-folder.dto';
 import { Translit } from 'src/shared/utils';
+import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
+import { PrimaryTagEntity } from '../model/primarytag.entity';
+import { SecondaryTagEntity } from '../model/secondarytag.entity';
+import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 
 
 @Injectable()
@@ -23,7 +27,9 @@ export class CoursesService {
         @InjectRepository(ModuleEntity) private readonly moduleRepo: Repository<ModuleEntity>,
         @InjectRepository(StudiesEntity) private readonly studyRepo: Repository<StudiesEntity>,
         @InjectRepository(CoursesEntity) private readonly courseRepo: Repository<CoursesEntity>,
-        @InjectRepository(CourseDescriptionEntity) private readonly coursedescRepo: Repository<CourseDescriptionEntity>
+        @InjectRepository(CourseDescriptionEntity) private readonly coursedescRepo: Repository<CourseDescriptionEntity>,
+        @InjectRepository(PrimaryTagEntity) private readonly primarytagRepo: Repository<PrimaryTagEntity>,
+        @InjectRepository(SecondaryTagEntity) private readonly secondarytagRepo: Repository<SecondaryTagEntity>
         ){}
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
@@ -234,6 +240,22 @@ export class CoursesService {
         console.error(err);
         }
         return folderName
+    }
+
+    async createPrimaryTag(createPrimaryTag:CreatePrimaryTagDto){
+        const { name } = createPrimaryTag;
+        
+        const primarytag: PrimaryTagEntity = await this.primarytagRepo.create({ name });
+        await this.primarytagRepo.save(primarytag);
+        return primarytag
+    }
+
+    async createSecondaryTag(createSecondaryTag:CreateSecondaryTagDto){
+        const { name, primarytag } = createSecondaryTag;
+        
+        const secondarytag: SecondaryTagEntity = await this.secondarytagRepo.create({ name,primarytag });
+        await this.secondarytagRepo.save(secondarytag);
+        return secondarytag
     }
 
 }

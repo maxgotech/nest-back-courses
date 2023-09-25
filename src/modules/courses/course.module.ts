@@ -6,9 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoursesService } from './service/courses-services.service';
 import { CourseDescriptionEntity } from './model/coursedesc.entity';
 import { StudiesEntity } from '../studies/model/studies.entity';
+import { PrimaryTagEntity } from './model/primarytag.entity';
+import { SecondaryTagEntity } from './model/secondarytag.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([CoursesEntity,ModuleEntity,CourseDescriptionEntity,StudiesEntity])],
+    imports: [TypeOrmModule.forFeature([CoursesEntity,ModuleEntity,CourseDescriptionEntity,StudiesEntity,PrimaryTagEntity,SecondaryTagEntity])],
     controllers: [CoursesController],
     providers: [CoursesService],
 })

@@ -10,6 +10,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { CourseImagesStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';
+import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
+import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 
 @Controller('courses')
 export class CoursesController {
@@ -114,5 +116,15 @@ export class CoursesController {
     async getImage(@Param('filename') filename, @Param('courseid') courseid , @Res() res:Response) {
         res.sendFile(filename, {root:'./assets/courses/'+ courseid});
     }
+
+    @Post('primarytagcreate')  
+        public async PrimaryTagCreate(@Body() name: CreatePrimaryTagDto) {
+        return await this.courseService.createPrimaryTag(name);  
+    }
+
+    @Post('secondarytagcreate')  
+    public async SecondaryTagCreate(@Body() secondarytag: CreateSecondaryTagDto) {
+    return await this.courseService.createSecondaryTag(secondarytag);  
+}
 
  }
