@@ -6,7 +6,7 @@ export class ModuleOrderDto {
   id: number;
 
   @IsNotEmpty()
-  order:number;
+  module_order:number;
   
 }
 

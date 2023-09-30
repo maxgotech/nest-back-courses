@@ -34,8 +34,9 @@ export class CoursesService {
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
         const { name, about, course } = moduleDto;
-        
-        const module: ModuleEntity = await this.moduleRepo.create({ name, about, course });
+        console.log(course)
+        const module_order = await this.MaxModuleOrderValue(course) + 1
+        const module: ModuleEntity = await this.moduleRepo.create({ name, about, course, module_order });
         await this.moduleRepo.save(module);
         return toModuleDto(module);
     }
@@ -187,7 +188,7 @@ export class CoursesService {
         .where({
             "id":id
         })
-        .orderBy("module.order","ASC")
+        .orderBy("module.module_order","ASC")
         .getMany();
         return ModuleList;
     }
@@ -264,7 +265,7 @@ export class CoursesService {
         moduleOrder.forEach(async element =>{
             await this.moduleRepo.createQueryBuilder()
             .update()
-            .set({order:element.order})
+            .set({module_order:element.module_order})
             .where("id=:id",{id:element.id})
             .execute()
         })
@@ -274,4 +275,13 @@ export class CoursesService {
         return(done)
     }
 
+    async MaxModuleOrderValue(courseid:CoursesEntity){
+        const order = await this.moduleRepo .createQueryBuilder()
+        .where({
+            "course":courseid
+        })
+        .orderBy("module_order","DESC")
+        .getOne();
+        return order.module_order
+    }
 }

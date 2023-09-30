@@ -9,7 +9,7 @@ export class ModuleDto {
   @IsNotEmpty()
   name: string;
 
-  order:number;
+  module_order:number;
 
   about?: string;
 

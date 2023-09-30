@@ -11,7 +11,7 @@ export class ModuleEntity {
     name:string;
 
     @Column({default:1})
-    order:number;
+    module_order:number;
 
     @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id, { onDelete: 'CASCADE' })
     @JoinColumn({name:'courseid'})

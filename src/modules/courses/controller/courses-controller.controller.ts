@@ -13,6 +13,7 @@ import { ImageFilter } from 'src/shared/filters';
 import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 import { ModuleOrderArrayDto } from '../dto/module/module-order-array.dto';
+import { CoursesEntity } from '../model/course.entity';
 
 @Controller('courses')
 export class CoursesController {
@@ -129,8 +130,13 @@ export class CoursesController {
     }
 
     @Post('updatemoduleorder')  
-    public async Test(@Body() moduleOrder:ModuleOrderArrayDto) {
+    public async UpdateModuleOrder(@Body() moduleOrder:ModuleOrderArrayDto) {
     return await this.courseService.UpdateModuleOrder(moduleOrder.moduleArray);  
+    }
+
+    @Post('testing')  
+    public async Test(@Body() id:CoursesEntity) {
+    return await this.courseService.MaxModuleOrderValue(id);  
     }
 
  }
