@@ -22,8 +22,8 @@ export const toUserDto = (data: UserEntity): UserDto => {
 };
 
 export const toStudyDto = (data: StudiesEntity): StudyDto => {  
-    const { id, name, id_content,type_content, user, course, module, id_kinescope_folder, order } = data;
-    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module, id_kinescope_folder, order };
+    const { id, name, id_content,type_content, user, course, module, id_kinescope_folder, study_order } = data;
+    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module, id_kinescope_folder, study_order };
     return studyDto;
 };
 

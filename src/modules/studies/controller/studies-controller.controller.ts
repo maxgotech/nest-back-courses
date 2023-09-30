@@ -92,8 +92,8 @@ export class StudiesController{
     }
 
     @Post('debug')
-        public async test(){
-        return await this.studyService.test()
+        public async test(@Body() id:StudyDto){
+        return await this.studyService.deleteStudyFolder(id)
     }
 
     @Post('videoupload')
@@ -117,7 +117,7 @@ export class StudiesController{
                     user: null,
                     course: null,
                     module: null,
-                    order:null
+                    study_order:1
                 }
                 const Study = await this.studyService.FindStudyByID(id)
                 return await fetch('https://uploader.kinescope.io/v2/video',

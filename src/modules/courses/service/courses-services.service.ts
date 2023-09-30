@@ -61,7 +61,10 @@ export class CoursesService {
 
         await this.moduleRepo.remove(moduleInDb);
 
-        return ('module '+ id + ' deleted');
+        const res = {
+            "deleted":'module ' + id
+        }
+        return res
     }
 
     async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    

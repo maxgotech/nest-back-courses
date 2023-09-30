@@ -53,7 +53,8 @@ export class StudiesServices {
             throw new HttpException('Study not found', HttpStatus.BAD_REQUEST);    
         }
         await this.studyRepo.remove(studyInDb);
-
+        await this.deleteStudyFolder(studyDto)
+        await this.deleteKinescopeFolder(studyInDb)
         return toStudyDto(studyInDb);
     }
 
@@ -216,10 +217,8 @@ export class StudiesServices {
         })
 		.catch(err => console.error(err));
     }
-    
 
     async createStudyFolder(createStudyFolder:CreateStudyFolderDto){
-        const fs = require('fs');
         const folderName = "assets/studies/study_" + createStudyFolder.id;
 
         try {
@@ -230,6 +229,18 @@ export class StudiesServices {
         console.error(err);
         }
         return folderName
+    }
+
+    async deleteStudyFolder(study:StudyDto) {
+        const folderName = "assets/studies/study_" + study.id;
+        try {
+            if (fs.existsSync(folderName)) {
+                fs.rmSync(folderName, { recursive: true, force: true });
+            }
+            } catch (err) {
+            console.error(err);
+            }
+            return 'folder ' + folderName + ' deleted'
     }
 
     async createKinescopeFolder(createStudyFolder:CreateStudyFolderDto){
@@ -253,6 +264,25 @@ export class StudiesServices {
             })
             .catch(err => console.error(err));
     }
+
+    async deleteKinescopeFolder(study:StudyDto){
+
+        return fetch('https://api.kinescope.io/v1/projects/' + process.env.API_KINESCOPE_PARENT_ID + '/folders/'+ study.id_kinescope_folder,
+        {method:'DELETE',
+        headers:{
+            'Authorization':'Bearer '+process.env.API_KINESCOPE_TOKEN
+        },
+        })
+        .then(response =>response.json())
+        .then(response => {
+            return  {
+               response
+            }
+        })
+        .catch(err => console.error(err));
+    }
+
+    
 
     async FindStudyByTypeAndID({id,type_content}:StudyDto){
         if (id==null){

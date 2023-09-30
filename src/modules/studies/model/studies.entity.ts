@@ -11,8 +11,8 @@ export class StudiesEntity {
     @Column({nullable:false})
     name:string;
 
-    @Column()
-    order:number;
+    @Column({default:1})
+    study_order:number;
 
     @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id)
     @JoinColumn({name:'courseid'})
