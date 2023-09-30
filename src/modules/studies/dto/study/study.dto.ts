@@ -11,6 +11,8 @@ export class StudyDto {
   @IsNotEmpty()
   name: string;
 
+  order:number;
+
   id_content: number;
 
   type_content:number;

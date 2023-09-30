@@ -10,6 +10,9 @@ export class ModuleEntity {
     @Column({nullable:false})
     name:string;
 
+    @Column({default:1})
+    order:number;
+
     @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id, { onDelete: 'CASCADE' })
     @JoinColumn({name:'courseid'})
     course:CoursesEntity;

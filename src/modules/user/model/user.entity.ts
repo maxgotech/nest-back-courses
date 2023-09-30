@@ -9,7 +9,7 @@ export class UserEntity {
     @Column({nullable:false})
     mail:string; // 255 chars
 
-    @Column({nullable:false})
+    @Column({nullable:false,select:false}) // Whenever you select the item with the password, you would have to explicitly "addSelect", otherwise this field is effectively excluded from general selects.
     password?:string;
 
     @Column({nullable:false})

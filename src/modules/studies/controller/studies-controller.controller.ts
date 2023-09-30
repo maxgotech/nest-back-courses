@@ -116,7 +116,8 @@ export class StudiesController{
                     id_kinescope_folder: null,
                     user: null,
                     course: null,
-                    module: null
+                    module: null,
+                    order:null
                 }
                 const Study = await this.studyService.FindStudyByID(id)
                 return await fetch('https://uploader.kinescope.io/v2/video',

@@ -12,6 +12,7 @@ import { CourseImagesStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';
 import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
+import { ModuleOrderArrayDto } from '../dto/module/module-order-array.dto';
 
 @Controller('courses')
 export class CoursesController {
@@ -125,6 +126,11 @@ export class CoursesController {
     @Post('secondarytagcreate')  
     public async SecondaryTagCreate(@Body() secondarytag: CreateSecondaryTagDto) {
     return await this.courseService.createSecondaryTag(secondarytag);  
-}
+    }
+
+    @Post('updatemoduleorder')  
+    public async Test(@Body() moduleOrder:ModuleOrderArrayDto) {
+    return await this.courseService.UpdateModuleOrder(moduleOrder.moduleArray);  
+    }
 
  }

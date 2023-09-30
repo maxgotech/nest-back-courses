@@ -9,6 +9,8 @@ export class ModuleDto {
   @IsNotEmpty()
   name: string;
 
+  order:number;
+
   about?: string;
 
   course?:CoursesEntity;

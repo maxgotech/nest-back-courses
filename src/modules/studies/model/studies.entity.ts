@@ -11,6 +11,9 @@ export class StudiesEntity {
     @Column({nullable:false})
     name:string;
 
+    @Column()
+    order:number;
+
     @ManyToOne((type) => CoursesEntity, (CoursesEntity) => CoursesEntity.id)
     @JoinColumn({name:'courseid'})
     course: CoursesEntity

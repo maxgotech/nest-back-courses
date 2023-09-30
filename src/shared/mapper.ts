@@ -22,8 +22,8 @@ export const toUserDto = (data: UserEntity): UserDto => {
 };
 
 export const toStudyDto = (data: StudiesEntity): StudyDto => {  
-    const { id, name, id_content,type_content, user, course, module, id_kinescope_folder } = data;
-    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module, id_kinescope_folder };
+    const { id, name, id_content,type_content, user, course, module, id_kinescope_folder, order } = data;
+    let studyDto: StudyDto = { id, name, id_content, type_content , user, course, module, id_kinescope_folder, order };
     return studyDto;
 };
 
@@ -46,8 +46,8 @@ export const toCourseDto = (data: CoursesEntity): CourseDto => {
 };
 
 export const toModuleDto = (data: ModuleEntity): ModuleDto => {  
-    const { id, name, about, course } = data;
-    let moduleDto: ModuleDto = {id, name, about, course };
+    const { id, name, about, course, order } = data;
+    let moduleDto: ModuleDto = {id, name, about, course, order };
     return moduleDto;
 };
 

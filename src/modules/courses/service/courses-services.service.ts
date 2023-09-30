@@ -18,7 +18,7 @@ import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
 import { PrimaryTagEntity } from '../model/primarytag.entity';
 import { SecondaryTagEntity } from '../model/secondarytag.entity';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
-
+import { ModuleOrderDto } from '../dto/module/module-order-array.dto';
 
 @Injectable()
 export class CoursesService { 
@@ -51,7 +51,7 @@ export class CoursesService {
             throw new HttpException('module not found', HttpStatus.BAD_REQUEST);    
         }
 
-        const CleanStudies = await this.studyRepo
+        await this.studyRepo
         .createQueryBuilder()
         .update(StudiesEntity)
         .set({module:null})
@@ -100,7 +100,7 @@ export class CoursesService {
             throw new HttpException('course not found', HttpStatus.BAD_REQUEST);    
         }
 
-        const CleanStudies = await this.studyRepo
+        await this.studyRepo
         .createQueryBuilder()
         .where("course = :course",{course:id})
         .update(StudiesEntity)
@@ -155,7 +155,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByTranslit({translit}:CourseDto){ //возвращает лишнюю информацию 
+    async FindCourseByTranslit({translit}:CourseDto){
         if (translit==null){
             return;
         } else {
@@ -174,7 +174,7 @@ export class CoursesService {
     }
     }
 
-    async ModuleListByCourse({ id }:CourseDto){ //возвращает лишнюю информацию 
+    async ModuleListByCourse({ id }:CourseDto){
         if (id==null){
             return;
         } else {
@@ -187,6 +187,7 @@ export class CoursesService {
         .where({
             "id":id
         })
+        .orderBy("module.order","ASC")
         .getMany();
         return ModuleList;
     }
@@ -256,6 +257,21 @@ export class CoursesService {
         const secondarytag: SecondaryTagEntity = await this.secondarytagRepo.create({ name,primarytag });
         await this.secondarytagRepo.save(secondarytag);
         return secondarytag
+    }
+
+    async UpdateModuleOrder(moduleOrder:ModuleOrderDto[]){
+        console.log(moduleOrder)
+        moduleOrder.forEach(async element =>{
+            await this.moduleRepo.createQueryBuilder()
+            .update()
+            .set({order:element.order})
+            .where("id=:id",{id:element.id})
+            .execute()
+        })
+        const done = {
+            "success":1
+        }
+        return(done)
     }
 
 }
