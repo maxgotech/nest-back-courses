@@ -33,12 +33,12 @@ export class StudiesServices {
         const { name, user  } = studyDto;        
         const study: StudiesEntity = await this.studyRepo.create({ name, user });
         await this.studyRepo.save(study);
-        await this.createStudyFolder(study); //создание папки
-        await this.createKinescopeFolder(study)
+        await this.createStudyFolder(study); //создание папки в проекте
+        await this.createKinescopeFolder(study) //создание папки на кинескопе
         .then((response:kinescopefolder) =>{
             study.id_kinescope_folder = response.id
         })
-        await this.updateStudyFolderId(study)
+        await this.updateStudyFolderId(study) //добавление id папки на кинескопе к занятию
         return toStudyDto(study);
     }
 
@@ -52,9 +52,9 @@ export class StudiesServices {
         if (!studyInDb) {
             throw new HttpException('Study not found', HttpStatus.BAD_REQUEST);    
         }
-        await this.studyRepo.remove(studyInDb);
-        await this.deleteStudyFolder(studyDto)
-        await this.deleteKinescopeFolder(studyInDb)
+        await this.studyRepo.remove(studyInDb); //удаление занятия
+        await this.deleteStudyFolder(studyDto) //удаления папки на кинескопе
+        await this.deleteKinescopeFolder(studyInDb) //удаление папки на в проекте
         return toStudyDto(studyInDb);
     }
 
@@ -222,12 +222,12 @@ export class StudiesServices {
         const folderName = "assets/studies/study_" + createStudyFolder.id;
 
         try {
-        if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName);
-        }
-        } catch (err) {
-        console.error(err);
-        }
+            if (!fs.existsSync(folderName)) {
+                fs.mkdirSync(folderName);
+            }
+            } catch (err) {
+            console.error(err);
+            }
         return folderName
     }
 
@@ -240,7 +240,7 @@ export class StudiesServices {
             } catch (err) {
             console.error(err);
             }
-            return 'folder ' + folderName + ' deleted'
+        return 'folder ' + folderName + ' deleted'
     }
 
     async createKinescopeFolder(createStudyFolder:CreateStudyFolderDto){
@@ -319,17 +319,6 @@ export class StudiesServices {
         });
 
        return ({'deleted':dir})
-    }
-
-    async test(){
-        return fetch('https://api.kinescope.io/v1/projects?per_page=100',
-        {method:'GET',
-        headers:{
-            'Authorization':'Bearer ba52ddc9-7645-4bd5-8d81-ad697e06b5f7'
-        }})
-        .then(response =>response.json())
-        .then(response => console.log(response))
-		.catch(err => console.error(err));
     }
 
 }

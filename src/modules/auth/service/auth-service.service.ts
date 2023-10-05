@@ -8,7 +8,6 @@ import { UserDto } from 'src/modules/user/dto/user.dto';
 import { LoginUserDto } from 'src/modules/user/dto/user-login.dto';
 import { JwtPayload } from '../interfaces/payload.interface';
 import * as dotenv from 'dotenv';
-import { CreateUserFolderDto } from 'src/modules/user/dto/user-folder.dto';
 import { CreateUserDtoToUserFolderDto } from 'src/shared/mapper';
 dotenv.config();
 
@@ -35,7 +34,7 @@ export class AuthService {
 }
 
 async login(loginUserDto: LoginUserDto): Promise<LoginStatus> {    
-    // find user in db    
+    // find user in db  
     const user = await this.usersService.findByMail(loginUserDto);
     
     // generate and sign token    

@@ -91,11 +91,6 @@ export class StudiesController{
         return await this.studyService.GetVideoContent(videoDto);
     }
 
-    @Post('debug')
-        public async test(@Body() id:StudyDto){
-        return await this.studyService.deleteStudyFolder(id)
-    }
-
     @Post('videoupload')
     @UseInterceptors(FileInterceptor('video', {
         fileFilter:VideoFilter

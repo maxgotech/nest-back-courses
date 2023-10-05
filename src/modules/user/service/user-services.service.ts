@@ -19,9 +19,12 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         return toUserDto(user);  
     }
 
-    async findByMail({ mail, password }: LoginUserDto): Promise<UserDto> {    
-        const user = await this.userRepo.findOne({ where: { mail } });
-        
+    async findByMail({ mail, password }: LoginUserDto): Promise<UserDto> {  
+        const user = await this.userRepo
+        .createQueryBuilder("user")
+        .where({mail})
+        .addSelect('user.password')
+        .getOne()
         if (!user) {
             throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);    
         }
