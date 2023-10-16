@@ -264,7 +264,6 @@ export class CoursesService {
     }
 
     async UpdateModuleOrder(moduleOrder:ModuleOrderDto[]){
-        console.log(moduleOrder)
         moduleOrder.forEach(async element =>{
             await this.moduleRepo.createQueryBuilder()
             .update()

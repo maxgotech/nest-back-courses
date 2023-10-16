@@ -11,6 +11,7 @@ export class UserController {
     constructor(private readonly userService: UserService) {
         
     }
+    
     @Post('data')
     public async login(@Body() UserDto: UserDto): Promise<UserDto> {
         return await this.userService.UserDatabyMail(UserDto);  

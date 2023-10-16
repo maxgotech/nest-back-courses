@@ -100,7 +100,6 @@ export class CoursesController {
     }))
     uploadPicture(@UploadedFile() file: Express.Multer.File){
         
-        console.log(file)
         if(!file){
             throw new BadRequestException("File is not an image")
         } else {
