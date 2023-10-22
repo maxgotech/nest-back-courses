@@ -11,9 +11,11 @@ export const CourseImagesStorage = diskStorage({
     },
     filename:(req,file,cb) => {
         const nameOrigin = file.originalname.split("*")[1];
-        const name = nameOrigin.split(".")[0];
-        const fileExtension = nameOrigin.split(".").pop();
-        const newFileName  = name.split(/[!\s#]+/).join('_')+ '.' +fileExtension;
+        const period = nameOrigin.lastIndexOf('.');
+        const name = nameOrigin.substring(0, period);
+        const fileExtension = nameOrigin.substring(period + 1);
+        const newFileName  = name + '.' +fileExtension;
+        console.log(newFileName)
         console.log('loaded')
         cb(null, newFileName);
     },

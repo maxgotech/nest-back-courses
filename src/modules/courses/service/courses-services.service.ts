@@ -19,6 +19,7 @@ import { PrimaryTagEntity } from '../model/primarytag.entity';
 import { SecondaryTagEntity } from '../model/secondarytag.entity';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 import { ModuleOrderDto } from '../dto/module/module-order-array.dto';
+const fs = require('fs');
 
 @Injectable()
 export class CoursesService { 
@@ -112,6 +113,8 @@ export class CoursesService {
         .execute()
 
         await this.courseRepo.remove(courseInDb);
+        console.log(courseDto)
+        await this.deleteCourseFolder(courseDto);
         return toCourseDto(courseInDb);
     }
 
@@ -286,4 +289,18 @@ export class CoursesService {
         .getOne();
         return order.module_order
     }
+
+    async deleteCourseFolder(course:CourseDto) {
+        const folderName = "assets/courses/course_" + course.id;
+        try {
+            if (fs.existsSync(folderName)) {
+                fs.rmSync(folderName, { recursive: true, force: true });
+            }
+            } catch (err) {
+            console.error(err);
+            }
+        return 'folder ' + folderName + ' deleted'
+    }
+
+
 }
