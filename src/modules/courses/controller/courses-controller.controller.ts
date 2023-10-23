@@ -20,7 +20,9 @@ export class CoursesController {
 
     constructor(private readonly courseService: CoursesService,) {}
 
-    @Post('newcourse')  
+    //////////////////// ЗАПРОСЫ РАБОТЫ С КУРСАМИ  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Post('newcourse')
         public async CourseCreate(@Body() createCourseDto: CreateCourseDto) {
         return await this.courseService.createCourse(createCourseDto);  
     }
@@ -45,16 +47,6 @@ export class CoursesController {
         return await this.courseService.UpdateCourseDesc(CourseDescDto);  
     }
 
-    @Post('newmodule')  
-        public async ModuleCreate(@Body() createModuleDto: CreateModuleDto) {
-        return await this.courseService.createModule(createModuleDto);  
-    }
-
-    @Post('deletemodule')  
-        public async ModuleDelete(@Body() ModuleDto: ModuleDto) {
-        return await this.courseService.deleteModule(ModuleDto);  
-    }
-
     @Post('courselist')  
         public async CourseList(@Body() courseDto: CourseDto) {
         return await this.courseService.CoursesListByCreatorID(courseDto);  
@@ -69,29 +61,6 @@ export class CoursesController {
         public async FundCourseByTranslit(@Body() courseDto: CourseDto) {
         return await this.courseService.FindCourseByTranslit(courseDto);  
     }
-
-    @Post('modulelist')  
-        public async ModuleList(@Body() id: CourseDto) {
-        return await this.courseService.ModuleListByCourse(id);  
-    }
-
-    @Post('findmodule')  
-        public async FindModule(@Body() moduleDto: ModuleDto) {
-        return await this.courseService.FindModuleByID(moduleDto);  
-    }
-
-    @Get('allcourses')
-        public async AllCourses(){
-        return await this.courseService.AllCourses();
-    }
-
-    @Get('getcourses/filter?')
-        public async filterfind(
-            @Query('date') date: string,
-            @Query('price') price: string,)
-        {
-        return await this.courseService.filterfind(date,price)
-        }
 
     @Post('coursepic')
     @UseInterceptors(FileInterceptor('image', {
@@ -118,24 +87,80 @@ export class CoursesController {
         res.sendFile(filename, {root:'./assets/courses/'+ courseid});
     }
 
+    @Get('allcourses')
+        public async AllCourses(){
+        return await this.courseService.AllCourses();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ЗАПРОСЫ РАБОТЫ С МОДУЛЯМИ  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+     @Post('newmodule')  
+        public async ModuleCreate(@Body() createModuleDto: CreateModuleDto) {
+        return await this.courseService.createModule(createModuleDto);  
+    }
+
+    @Post('deletemodule')  
+        public async ModuleDelete(@Body() ModuleDto: ModuleDto) {
+        return await this.courseService.deleteModule(ModuleDto);  
+    }
+
+    @Post('modulelist')  
+        public async ModuleList(@Body() id: CourseDto) {
+        return await this.courseService.ModuleListByCourse(id);  
+    }
+
+    @Post('findmodule')  
+        public async FindModule(@Body() moduleDto: ModuleDto) {
+        return await this.courseService.FindModuleByID(moduleDto);  
+    }
+
+    @Post('updatemoduleorder')  
+        public async UpdateModuleOrder(@Body() moduleOrder:ModuleOrderArrayDto) {
+        return await this.courseService.UpdateModuleOrder(moduleOrder.moduleArray);  
+    }
+
+    @Post('testing')  
+        public async Test(@Body() id:CoursesEntity) {
+        return await this.courseService.MaxModuleOrderValue(id);  
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ФИЛЬТРЫ  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+     @Get('catalog/tags?')
+        public async findbytags(
+            @Query('primarytag') primarytag: string,
+            @Query('secondarytag') secondarytag: string,)
+        {
+        return await this.courseService.catalogfind(primarytag,secondarytag)
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ЗАПРОСЫ РАБОТЫ С ТЕГАМИ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @Post('primarytagcreate')  
         public async PrimaryTagCreate(@Body() name: CreatePrimaryTagDto) {
         return await this.courseService.createPrimaryTag(name);  
     }
 
     @Post('secondarytagcreate')  
-    public async SecondaryTagCreate(@Body() secondarytag: CreateSecondaryTagDto) {
-    return await this.courseService.createSecondaryTag(secondarytag);  
+        public async SecondaryTagCreate(@Body() secondarytag: CreateSecondaryTagDto) {
+        return await this.courseService.createSecondaryTag(secondarytag);  
     }
 
-    @Post('updatemoduleorder')  
-    public async UpdateModuleOrder(@Body() moduleOrder:ModuleOrderArrayDto) {
-    return await this.courseService.UpdateModuleOrder(moduleOrder.moduleArray);  
-    }
-
-    @Post('testing')  
-    public async Test(@Body() id:CoursesEntity) {
-    return await this.courseService.MaxModuleOrderValue(id);  
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  }

@@ -3,6 +3,8 @@ import { ModuleEntity } from "./module.entity";
 import { StudiesEntity } from "src/modules/studies/model/studies.entity";
 import { UserEntity } from "src/modules/user/model/user.entity";
 import { CourseDescriptionEntity } from "./coursedesc.entity";
+import { PrimaryTagEntity } from "./primarytag.entity";
+import { SecondaryTagEntity } from "./secondarytag.entity";
 
 @Entity('course')
 export class CoursesEntity {
@@ -33,6 +35,14 @@ export class CoursesEntity {
     @ManyToOne((type) => UserEntity, (UserEntity) => UserEntity.id)
     @JoinColumn({name:'userid'})
     user: UserEntity
+
+    @ManyToOne((type) => PrimaryTagEntity, (PrimaryTagEntity) => PrimaryTagEntity.id)
+    @JoinColumn({name:'primarytagid'})
+    primarytag: PrimaryTagEntity
+
+    @ManyToOne((type) => SecondaryTagEntity, (SecondaryTagEntity) => SecondaryTagEntity.id)
+    @JoinColumn({name:'secondarytagid'})
+    secondarytag: SecondaryTagEntity
 
     @CreateDateColumn()
     createdAt:Date;

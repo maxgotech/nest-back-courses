@@ -33,7 +33,151 @@ export class CoursesService {
         @InjectRepository(SecondaryTagEntity) private readonly secondarytagRepo: Repository<SecondaryTagEntity>
         ){}
 
-    async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    
+
+    //////////////////// ФУНКЦИИ РАБОТЫ С КУРСАМИ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    // содание курса
+        const { name, user, price, image_path  } = courseDto;
+
+        const translit = await Translit(name)
+        
+        const course: CoursesEntity = await this.courseRepo.create({ name,translit, user, price, image_path });
+        await this.courseRepo.save(course);
+        this.createCourseFolder(course);
+        return toCourseDto(course);
+    }
+
+    async UpdateCourse(courseDto: CourseDto): Promise<CourseDto> {    // обновление курса
+        const {id, name, price, image_path } = courseDto;
+
+        const translit = await Translit(name)
+
+        await this.courseRepo.createQueryBuilder()
+        .update()
+        .set({name:name, translit:translit, price:price, image_path:image_path})
+        .where("id=:id",{id:id})
+        .execute()
+        const course = await this.courseRepo.findOne({where:{id}})
+        return toCourseDto(course);
+    }
+
+    async deleteCourse(courseDto: CourseDto) {    // удаление курса
+        const { id  } = courseDto;
+        
+        // check if the study exists in the db    
+        const courseInDb = await this.courseRepo.findOne({ 
+            where: { id } 
+        });
+        if (!courseInDb) {
+            throw new HttpException('course not found', HttpStatus.BAD_REQUEST);    
+        }
+
+        await this.studyRepo
+        .createQueryBuilder()
+        .where("course = :course",{course:id})
+        .update(StudiesEntity)
+        .set({module:null,course:null})
+        .execute()
+
+        await this.courseRepo.remove(courseInDb);
+        console.log(courseDto)
+        await this.deleteCourseFolder(courseDto);
+        return toCourseDto(courseInDb);
+    }
+
+    async createCourseDesc(coursedescDto: CreateCourseDescDto): Promise<CourseDescDto> {    // создание описания курса
+        const {course, shortabout, learn, req, about, audience } = coursedescDto;
+        
+        const coursedesc: CourseDescriptionEntity = await this.coursedescRepo.create({ course,shortabout, learn, req, about, audience });
+        await this.coursedescRepo.save(coursedesc);
+        return toCourseDescDto(coursedesc);
+    }
+
+    async UpdateCourseDesc(coursedescDto: CourseDescDto): Promise<CourseDescDto> {    // обновление описания курса
+        const {id, course, shortabout, learn, req, about, audience } = coursedescDto;
+
+        await this.coursedescRepo.createQueryBuilder()
+        .update()
+        .set({course:course, shortabout:shortabout, learn:learn, req:req, about:about, audience:audience})
+        .where("id=:id",{id:id})
+        .execute()
+        const coursedesc = await this.coursedescRepo.findOne({where:{id}})
+        return toCourseDescDto(coursedesc);
+    }
+    
+    async CoursesListByCreatorID({ user }: CourseDto){   // поиск списка курсов пользователей
+        if (user==null){
+            return;
+        } else {
+            const CoursesList = await this.courseRepo
+            .createQueryBuilder("course")
+            .where({
+                "user":user
+            })
+            .getMany();
+        return CoursesList.reverse();
+    }
+    }
+
+    async FindCourseByID({id}:CourseDto){    // поиск курса по айди               //возвращает лишнюю информацию 
+        if (id==null){
+            return;
+        } else {
+        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { id } });
+        return toCourseDto(Course);
+    }
+    }
+
+    async FindCourseByTranslit({translit}:CourseDto){  // поиск курса по транслиту
+        if (translit==null){
+            return;
+        } else {
+        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { translit } });
+        return toCourseDto(Course);
+    }
+    }
+
+    async AllCourses(){  //поиск всех куров
+
+        const CoursesList = await this.courseRepo.find({relations:['user']});
+        return CoursesList;
+    }
+
+    async createCourseFolder(createCourseFolder:CreateCourseFolderDto){  // содание папки курса в фс
+        const fs = require('fs');
+        const folderName = "assets/courses/course_" + createCourseFolder.id;
+
+        try {
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+        }
+        } catch (err) {
+        console.error(err);
+        }
+        return folderName
+    }
+
+    async deleteCourseFolder(course:CourseDto) {  // удаление папки курса из фс
+
+        const folderName = "assets/courses/course_" + course.id;
+        try {
+            if (fs.existsSync(folderName)) {
+                fs.rmSync(folderName, { recursive: true, force: true });
+            }
+            } catch (err) {
+            console.error(err);
+            }
+        return 'folder ' + folderName + ' deleted'
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ФУНКЦИИ РАБОТЫ С МОДУЛЯМИ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    // создание модуля 
         const { name, about, course } = moduleDto;
         console.log(course)
         const module_order = await this.MaxModuleOrderValue(course) + 1
@@ -42,7 +186,7 @@ export class CoursesService {
         return toModuleDto(module);
     }
 
-    async deleteModule(moduleDto: ModuleDto) {    
+    async deleteModule(moduleDto: ModuleDto) {    // удаление модуля
         const { id  } = moduleDto;
         
         // check if the module exists in the db    
@@ -68,111 +212,7 @@ export class CoursesService {
         return res
     }
 
-    async createCourse(courseDto: CreateCourseDto): Promise<CourseDto> {    
-        const { name, user, price, image_path  } = courseDto;
-
-        const translit = await Translit(name)
-        
-        const course: CoursesEntity = await this.courseRepo.create({ name,translit, user, price, image_path });
-        await this.courseRepo.save(course);
-        this.createCourseFolder(course);
-        return toCourseDto(course);
-    }
-
-    async UpdateCourse(courseDto: CourseDto): Promise<CourseDto> {    
-        const {id, name, price, image_path } = courseDto;
-
-        const translit = await Translit(name)
-
-        await this.courseRepo.createQueryBuilder()
-        .update()
-        .set({name:name, translit:translit, price:price, image_path:image_path})
-        .where("id=:id",{id:id})
-        .execute()
-        const course = await this.courseRepo.findOne({where:{id}})
-        return toCourseDto(course);
-    }
-    
-
-    async deleteCourse(courseDto: CourseDto) {    
-        const { id  } = courseDto;
-        
-        // check if the study exists in the db    
-        const courseInDb = await this.courseRepo.findOne({ 
-            where: { id } 
-        });
-        if (!courseInDb) {
-            throw new HttpException('course not found', HttpStatus.BAD_REQUEST);    
-        }
-
-        await this.studyRepo
-        .createQueryBuilder()
-        .where("course = :course",{course:id})
-        .update(StudiesEntity)
-        .set({module:null,course:null})
-        .execute()
-
-        await this.courseRepo.remove(courseInDb);
-        console.log(courseDto)
-        await this.deleteCourseFolder(courseDto);
-        return toCourseDto(courseInDb);
-    }
-
-    async createCourseDesc(coursedescDto: CreateCourseDescDto): Promise<CourseDescDto> {    
-        const {course, shortabout, learn, req, about, audience } = coursedescDto;
-        
-        const coursedesc: CourseDescriptionEntity = await this.coursedescRepo.create({ course,shortabout, learn, req, about, audience });
-        await this.coursedescRepo.save(coursedesc);
-        return toCourseDescDto(coursedesc);
-    }
-
-    async UpdateCourseDesc(coursedescDto: CourseDescDto): Promise<CourseDescDto> {    
-        const {id, course, shortabout, learn, req, about, audience } = coursedescDto;
-
-        await this.coursedescRepo.createQueryBuilder()
-        .update()
-        .set({course:course, shortabout:shortabout, learn:learn, req:req, about:about, audience:audience})
-        .where("id=:id",{id:id})
-        .execute()
-        const coursedesc = await this.coursedescRepo.findOne({where:{id}})
-        return toCourseDescDto(coursedesc);
-    }
-    
-
-    async CoursesListByCreatorID({ user }: CourseDto){
-        if (user==null){
-            return;
-        } else {
-            const CoursesList = await this.courseRepo
-            .createQueryBuilder("course")
-            .where({
-                "user":user
-            })
-            .getMany();
-        return CoursesList.reverse();
-    }
-    }
-
-    async FindCourseByID({id}:CourseDto){ //возвращает лишнюю информацию 
-        if (id==null){
-            return;
-        } else {
-        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { id } });
-        return toCourseDto(Course);
-    }
-    }
-
-    async FindCourseByTranslit({translit}:CourseDto){
-        if (translit==null){
-            return;
-        } else {
-        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { translit } });
-        return toCourseDto(Course);
-    }
-    }
-    
-    
-    async FindModuleByID({id}:ModuleDto){
+    async FindModuleByID({id}:ModuleDto){   // поиск модуля по ид
         if (id==null){
             return;
         } else {
@@ -181,7 +221,7 @@ export class CoursesService {
     }
     }
 
-    async ModuleListByCourse({ id }:CourseDto){
+    async ModuleListByCourse({ id }:CourseDto){ // поиск всех модулей курса
         if (id==null){
             return;
         } else {
@@ -200,73 +240,7 @@ export class CoursesService {
     }
     }
 
-    async AllCourses(){
-        const CoursesList = await this.courseRepo.find({relations:['user']});
-        return CoursesList;
-    }
-
-    async filterfind(date:string,price:string){
-        const from = price.split('/')[0]
-        const to = price.split('/')[1]
-
-        let dateorder
-
-        if (date=='newer'){
-            dateorder = 'DESC'
-        } else
-            dateorder = "ASC"
-
-        const CoursesList = await this.courseRepo
-        .createQueryBuilder("course")
-        .leftJoinAndSelect("course.user","user")
-        .orderBy("course.createdAt", dateorder)
-        .where(
-            'course.price >= :price',
-            {
-              price: from,
-            }
-        )
-        .andWhere(
-            'course.price <= :to',
-            {
-              to: to,
-            }
-        )
-        .getMany();
-        return CoursesList
-    }
-
-    async createCourseFolder(createCourseFolder:CreateCourseFolderDto){
-        const fs = require('fs');
-        const folderName = "assets/courses/course_" + createCourseFolder.id;
-
-        try {
-        if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName);
-        }
-        } catch (err) {
-        console.error(err);
-        }
-        return folderName
-    }
-
-    async createPrimaryTag(createPrimaryTag:CreatePrimaryTagDto){
-        const { name } = createPrimaryTag;
-        
-        const primarytag: PrimaryTagEntity = await this.primarytagRepo.create({ name });
-        await this.primarytagRepo.save(primarytag);
-        return primarytag
-    }
-
-    async createSecondaryTag(createSecondaryTag:CreateSecondaryTagDto){
-        const { name, primarytag } = createSecondaryTag;
-        
-        const secondarytag: SecondaryTagEntity = await this.secondarytagRepo.create({ name,primarytag });
-        await this.secondarytagRepo.save(secondarytag);
-        return secondarytag
-    }
-
-    async UpdateModuleOrder(moduleOrder:ModuleOrderDto[]){
+    async UpdateModuleOrder(moduleOrder:ModuleOrderDto[]){ // обновление порядка модулей в курсе
         moduleOrder.forEach(async element =>{
             await this.moduleRepo.createQueryBuilder()
             .update()
@@ -280,7 +254,7 @@ export class CoursesService {
         return(done)
     }
 
-    async MaxModuleOrderValue(courseid:CoursesEntity){
+    async MaxModuleOrderValue(courseid:CoursesEntity){ // поиск последнего модуля в очереди
         const order = await this.moduleRepo .createQueryBuilder()
         .where({
             "course":courseid
@@ -290,17 +264,67 @@ export class CoursesService {
         return order.module_order
     }
 
-    async deleteCourseFolder(course:CourseDto) {
-        const folderName = "assets/courses/course_" + course.id;
-        try {
-            if (fs.existsSync(folderName)) {
-                fs.rmSync(folderName, { recursive: true, force: true });
-            }
-            } catch (err) {
-            console.error(err);
-            }
-        return 'folder ' + folderName + ' deleted'
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ФИЛЬТРЫ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async catalogfind(primarytag:string,secondarytag:string){  //фильтр по датам и ценам
+        if (primarytag==null)
+        {
+            return this.AllCourses()
+        } else if (secondarytag==null){
+            const CoursesList = await this.courseRepo
+            .createQueryBuilder("course")
+            .leftJoin("course.primarytag","primarytag")
+            .leftJoin("course.secondarytag","secondarytag")
+            .where(
+                "primarytag.translation=:primarytag",{primarytag:primarytag}
+            )
+            .getMany();
+            return CoursesList
+        }
+
+        const CoursesList = await this.courseRepo
+        .createQueryBuilder("course")
+        .leftJoinAndSelect("course.user","user")
+        .leftJoin("course.primarytag","primarytag")
+        .leftJoin("course.secondarytag","secondarytag")
+        .where(
+            "primarytag.translation=:primarytag",{primarytag:primarytag}
+        )
+        .andWhere(
+            "secondarytag.translation=:secondarytag",{secondarytag:secondarytag}
+        )
+        .getMany();
+        return CoursesList
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    //////////////////// ФУНКЦИИ РАБОТЫ С ТЕГАМИ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async createPrimaryTag(createPrimaryTag:CreatePrimaryTagDto){ // создание первичного тега
+        const { name } = createPrimaryTag;
+        
+        const primarytag: PrimaryTagEntity = await this.primarytagRepo.create({ name });
+        await this.primarytagRepo.save(primarytag);
+        return primarytag
+    }
+
+    async createSecondaryTag(createSecondaryTag:CreateSecondaryTagDto){ // создание вторичного тега
+        const { name, primarytag } = createSecondaryTag;
+        
+        const secondarytag: SecondaryTagEntity = await this.secondarytagRepo.create({ name,primarytag });
+        await this.secondarytagRepo.save(secondarytag);
+        return secondarytag
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

@@ -8,6 +8,9 @@ export class SecondaryTagEntity {
     @Column({nullable:false})
     name:string;
 
+    @Column({nullable:false})
+    translation:string;
+
     @ManyToOne((type) => PrimaryTagEntity, (PrimaryTagEntity) => PrimaryTagEntity.id, { onDelete: 'CASCADE' })
     @JoinColumn({name:'primarytag'})
     primarytag:PrimaryTagEntity;

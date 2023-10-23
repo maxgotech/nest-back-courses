@@ -8,6 +8,9 @@ export class PrimaryTagEntity {
     @Column({nullable:false})
     name:string;
 
+    @Column({nullable:false})
+    translation:string;
+
     @OneToMany((type)=>SecondaryTagEntity,(SecondaryTagEntity)=>SecondaryTagEntity.primarytag)
     seondarytags:SecondaryTagEntity[];
 }
