@@ -139,7 +139,7 @@ export class CoursesService {
 
     async AllCourses(){  //поиск всех куров
 
-        const CoursesList = await this.courseRepo.find({relations:['user']});
+        const CoursesList = await this.courseRepo.find({relations:['user','primarytag','secondarytag']});
         return CoursesList;
     }
 
@@ -276,17 +276,29 @@ export class CoursesService {
         {
             return this.AllCourses()
         } else if (secondarytag==null){
+            const primary_tag = await this.primarytagRepo.find({where:{
+                translation:primarytag
+            }})
             const CoursesList = await this.courseRepo
             .createQueryBuilder("course")
+            .leftJoinAndSelect("course.user","user")
             .leftJoin("course.primarytag","primarytag")
-            .leftJoin("course.secondarytag","secondarytag")
             .where(
                 "primarytag.translation=:primarytag",{primarytag:primarytag}
             )
             .getMany();
-            return CoursesList
+            const response = {
+                'primarytag':primary_tag,
+                'courses':CoursesList
+            }
+            return response
         }
-
+        const primary_tag = await this.primarytagRepo.find({where:{
+            translation:primarytag
+        }})
+        const secondary_tag = await this.secondarytagRepo.find({where:{
+            translation:secondarytag
+        }})
         const CoursesList = await this.courseRepo
         .createQueryBuilder("course")
         .leftJoinAndSelect("course.user","user")
@@ -299,7 +311,12 @@ export class CoursesService {
             "secondarytag.translation=:secondarytag",{secondarytag:secondarytag}
         )
         .getMany();
-        return CoursesList
+        const response = {
+                'primarytag':primary_tag,
+                'secondarytag':secondary_tag,
+                'courses':CoursesList
+            }
+        return response
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
