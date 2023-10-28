@@ -42,8 +42,7 @@ export class StudiesServices {
         return toStudyDto(study);
     }
 
-    async deleteStudy(studyDto: StudyDto) {    
-        const { id  } = studyDto;
+    async deleteStudy(id: number) {    
         
         // check if the study exists in the db    
         const studyInDb = await this.studyRepo.findOne({ 
@@ -53,8 +52,19 @@ export class StudiesServices {
             throw new HttpException('Study not found', HttpStatus.BAD_REQUEST);    
         }
         await this.studyRepo.remove(studyInDb); //удаление занятия
-        await this.deleteStudyFolder(studyDto) //удаления папки на кинескопе
-        await this.deleteKinescopeFolder(studyInDb) //удаление папки на в проекте
+        const studyDto:StudyDto={
+            id: id,
+            name: null,
+            study_order: null,
+            id_content: null,
+            type_content: null,
+            id_kinescope_folder: null,
+            user: null,
+            course: null,
+            module: null
+        }
+        await this.deleteStudyFolder(studyDto) // удаления папки в проекте
+        await this.deleteKinescopeFolder(studyInDb) // удаления папки на кинескопе
         return toStudyDto(studyInDb);
     }
 

@@ -44,6 +44,9 @@ export class CoursesEntity {
     @JoinColumn({name:'secondarytagid'})
     secondarytag: SecondaryTagEntity
 
+    @Column({nullable:false,default:false})
+    published:boolean;
+
     @CreateDateColumn()
     createdAt:Date;
 

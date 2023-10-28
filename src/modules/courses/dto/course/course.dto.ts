@@ -17,6 +17,8 @@ export class CourseDto {
 
   price?: number;
 
+  published: boolean;
+
   image_path?: string;
 
   @IsNotEmpty()

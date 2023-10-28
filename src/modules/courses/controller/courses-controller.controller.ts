@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query } from '@nestjs/common';
+import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query, Put, Patch, Delete } from '@nestjs/common';
 import { CoursesService } from '../service/courses-services.service';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
@@ -32,9 +32,9 @@ export class CoursesController {
         return await this.courseService.UpdateCourse(CourseDto);  
     }
 
-    @Post('deletecourse')  
-        public async CourseDelete(@Body() courseDto: CourseDto) {
-        return await this.courseService.deleteCourse(courseDto);  
+    @Delete('deletecourse/:id')  
+        public async CourseDelete(@Param('id') id) {
+        return await this.courseService.deleteCourse(id);  
     }
 
     @Post('newcoursedesc')  
@@ -92,6 +92,13 @@ export class CoursesController {
         return await this.courseService.AllCourses();
     }
 
+    @Patch('publish')
+        public async PublishCourse(@Body() id: CourseDto){
+            console.log(id)
+            return await this.courseService.publishCourse(id)
+    }
+    
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -104,9 +111,9 @@ export class CoursesController {
         return await this.courseService.createModule(createModuleDto);  
     }
 
-    @Post('deletemodule')  
-        public async ModuleDelete(@Body() ModuleDto: ModuleDto) {
-        return await this.courseService.deleteModule(ModuleDto);  
+    @Delete('deletemodule/:id')  
+        public async ModuleDelete(@Param('id') id) {
+        return await this.courseService.deleteModule(id);  
     }
 
     @Post('modulelist')  

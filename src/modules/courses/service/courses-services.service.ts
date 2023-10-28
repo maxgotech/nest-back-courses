@@ -61,9 +61,8 @@ export class CoursesService {
         return toCourseDto(course);
     }
 
-    async deleteCourse(courseDto: CourseDto) {    // удаление курса
-        const { id  } = courseDto;
-        
+    async deleteCourse(id: number) {    // удаление курса
+
         // check if the study exists in the db    
         const courseInDb = await this.courseRepo.findOne({ 
             where: { id } 
@@ -78,9 +77,15 @@ export class CoursesService {
         .update(StudiesEntity)
         .set({module:null,course:null})
         .execute()
-
+        const courseDto:CourseDto = {
+            id: id,
+            name: null,
+            translit: null,
+            coursedesc: null,
+            published: null,
+            user: null
+        }
         await this.courseRepo.remove(courseInDb);
-        console.log(courseDto)
         await this.deleteCourseFolder(courseDto);
         return toCourseDto(courseInDb);
     }
@@ -137,12 +142,6 @@ export class CoursesService {
     }
     }
 
-    async AllCourses(){  //поиск всех куров
-
-        const CoursesList = await this.courseRepo.find({relations:['user','primarytag','secondarytag']});
-        return CoursesList;
-    }
-
     async createCourseFolder(createCourseFolder:CreateCourseFolderDto){  // содание папки курса в фс
         const fs = require('fs');
         const folderName = "assets/courses/course_" + createCourseFolder.id;
@@ -170,6 +169,17 @@ export class CoursesService {
         return 'folder ' + folderName + ' deleted'
     }
 
+    async publishCourse(courseDto:CourseDto){
+        const {id} = courseDto
+        await this.courseRepo.createQueryBuilder()
+        .update()
+        .set({published:true})
+        .where("id=:id",{id:id})
+        .execute()
+        const course = await this.courseRepo.findOne({where:{id}})
+        return toCourseDto(course);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -186,8 +196,7 @@ export class CoursesService {
         return toModuleDto(module);
     }
 
-    async deleteModule(moduleDto: ModuleDto) {    // удаление модуля
-        const { id  } = moduleDto;
+    async deleteModule(id:number) {    // удаление модуля
         
         // check if the module exists in the db    
         const moduleInDb = await this.moduleRepo.findOne({ 
@@ -261,6 +270,9 @@ export class CoursesService {
         })
         .orderBy("module_order","DESC")
         .getOne();
+        if (order==null){
+            return 0
+        }
         return order.module_order
     }
 
@@ -270,6 +282,12 @@ export class CoursesService {
 
 
     //////////////////// ФИЛЬТРЫ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    async AllCourses(){  //поиск всех куров
+
+        const CoursesList = await this.courseRepo.find({relations:['user','primarytag','secondarytag'],where:{published:true}});
+        return CoursesList;
+    }
 
     async catalogfind(primarytag:string,secondarytag:string){  //фильтр по датам и ценам
         if (primarytag==null)
@@ -283,7 +301,10 @@ export class CoursesService {
             .createQueryBuilder("course")
             .leftJoinAndSelect("course.user","user")
             .leftJoin("course.primarytag","primarytag")
-            .where(
+            .where({
+                "published":true
+            })
+            .andWhere(
                 "primarytag.translation=:primarytag",{primarytag:primarytag}
             )
             .getMany();
@@ -304,7 +325,10 @@ export class CoursesService {
         .leftJoinAndSelect("course.user","user")
         .leftJoin("course.primarytag","primarytag")
         .leftJoin("course.secondarytag","secondarytag")
-        .where(
+        .where({
+            "published":true
+        })
+        .andWhere(
             "primarytag.translation=:primarytag",{primarytag:primarytag}
         )
         .andWhere(
