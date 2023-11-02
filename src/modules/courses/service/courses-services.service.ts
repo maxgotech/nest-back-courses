@@ -3,7 +3,7 @@ import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CoursesEntity } from '../model/course.entity';
 import { toModuleDto, toCourseDto, toCourseDescDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
@@ -19,6 +19,7 @@ import { PrimaryTagEntity } from '../model/primarytag.entity';
 import { SecondaryTagEntity } from '../model/secondarytag.entity';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 import { ModuleOrderDto } from '../dto/module/module-order-array.dto';
+import { Levenshtein } from 'src/shared/utils';
 const fs = require('fs');
 
 @Injectable()
@@ -340,6 +341,32 @@ export class CoursesService {
                 'secondarytag':secondary_tag,
                 'courses':CoursesList
             }
+        return response
+    }
+
+    async search(searchQuery:string){
+        if (searchQuery==null){
+            return this.AllCourses()
+        }
+        let response =[]
+        const wordsArray = searchQuery.split(' ')
+        console.log(wordsArray)
+        for await(const SearchWord of wordsArray){
+            const foundWords = await this.courseRepo.createQueryBuilder()
+            .where('name LIKE :word',{ word:'%'+SearchWord+'%'})
+            .andWhere({
+                "published":true
+            })
+            .getMany()
+            for await(const foundWord of foundWords){
+                await Levenshtein(foundWord,SearchWord).then((similar)=>{
+                    if (similar>=4){
+                        response.push(foundWord)
+                    }
+                })
+            }
+        }
+
         return response
     }
 

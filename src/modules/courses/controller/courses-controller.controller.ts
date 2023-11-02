@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query, Put, Patch, Delete } from '@nestjs/common';
+import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query, Patch, Delete } from '@nestjs/common';
 import { CoursesService } from '../service/courses-services.service';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
@@ -14,7 +14,6 @@ import { CreatePrimaryTagDto } from '../dto/tags/primarytag-create.dto';
 import { CreateSecondaryTagDto } from '../dto/tags/secondarytag-create.dto';
 import { ModuleOrderArrayDto } from '../dto/module/module-order-array.dto';
 import { CoursesEntity } from '../model/course.entity';
-
 @Controller('courses')
 export class CoursesController {
 
@@ -87,11 +86,6 @@ export class CoursesController {
         res.sendFile(filename, {root:'./assets/courses/'+ courseid});
     }
 
-    @Get('allcourses')
-        public async AllCourses(){
-        return await this.courseService.AllCourses();
-    }
-
     @Patch('publish')
         public async PublishCourse(@Body() id: CourseDto){
             console.log(id)
@@ -143,12 +137,25 @@ export class CoursesController {
 
     //////////////////// ФИЛЬТРЫ  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-     @Get('catalog/tags?')
+    @Get('allcourses')
+    public async AllCourses(){
+    return await this.courseService.AllCourses();
+    }
+
+    @Get('catalog/tags?')
         public async findbytags(
             @Query('primarytag') primarytag: string,
             @Query('secondarytag') secondarytag: string,)
-        {
+    {
         return await this.courseService.catalogfind(primarytag,secondarytag)
+    }
+
+    @Get('search/?')
+        public async search(
+            @Query('text') text:string
+        )
+    {
+        return await this.courseService.search(text)
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
