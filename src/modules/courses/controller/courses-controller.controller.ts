@@ -1,4 +1,4 @@
-import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query, Patch, Delete } from '@nestjs/common';
+import { Controller, Body, Post, Get, UseInterceptors, UploadedFile, BadRequestException, Param, Res, Query, Patch, Delete, Put } from '@nestjs/common';
 import { CoursesService } from '../service/courses-services.service';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
@@ -26,7 +26,7 @@ export class CoursesController {
         return await this.courseService.createCourse(createCourseDto);  
     }
 
-    @Post('updatecourse')  
+    @Patch('updatecourse')  
         public async CourseUpdate(@Body() CourseDto: CourseDto) {
         return await this.courseService.UpdateCourse(CourseDto);  
     }
@@ -41,24 +41,24 @@ export class CoursesController {
         return await this.courseService.createCourseDesc(createCourseDescDto);  
     }
 
-    @Post('updatecoursedesc')  
+    @Put('updatecoursedesc')  
         public async CourseDescUpdate(@Body() CourseDescDto: CourseDescDto) {
         return await this.courseService.UpdateCourseDesc(CourseDescDto);  
     }
 
-    @Post('courselist')  
-        public async CourseList(@Body() courseDto: CourseDto) {
-        return await this.courseService.CoursesListByCreatorID(courseDto);  
+    @Get('courselist?')  
+        public async CourseList(@Query('user') user) {
+        return await this.courseService.CoursesListByCreatorID(user);  
     }
 
-    @Post('findcoursebyid')  
-        public async FundCourse(@Body() courseDto: CourseDto) {
-        return await this.courseService.FindCourseByID(courseDto);  
+    @Get('findcoursebyid?')  
+        public async FundCourse(@Query('id') id) {
+        return await this.courseService.FindCourseByID(id);  
     }
 
-    @Post('findcoursebytranslit')  
-        public async FundCourseByTranslit(@Body() courseDto: CourseDto) {
-        return await this.courseService.FindCourseByTranslit(courseDto);  
+    @Get('findcoursebytranslit?')  
+        public async FundCourseByTranslit(@Query('translit') translit) {
+        return await this.courseService.FindCourseByTranslit(translit);  
     }
 
     @Post('coursepic')
@@ -88,8 +88,7 @@ export class CoursesController {
 
     @Patch('publish')
         public async PublishCourse(@Body() id: CourseDto){
-            console.log(id)
-            return await this.courseService.publishCourse(id)
+        return await this.courseService.publishCourse(id)
     }
     
 
@@ -110,24 +109,19 @@ export class CoursesController {
         return await this.courseService.deleteModule(id);  
     }
 
-    @Post('modulelist')  
-        public async ModuleList(@Body() id: CourseDto) {
+    @Get('modulelist?')  
+        public async ModuleList(@Query('id') id) {
         return await this.courseService.ModuleListByCourse(id);  
     }
 
-    @Post('findmodule')  
-        public async FindModule(@Body() moduleDto: ModuleDto) {
-        return await this.courseService.FindModuleByID(moduleDto);  
+    @Get('findmodule?')  
+        public async FindModule(@Query('id') id) {
+        return await this.courseService.FindModuleByID(id);  
     }
 
-    @Post('updatemoduleorder')  
+    @Patch('updatemoduleorder')  
         public async UpdateModuleOrder(@Body() moduleOrder:ModuleOrderArrayDto) {
         return await this.courseService.UpdateModuleOrder(moduleOrder.moduleArray);  
-    }
-
-    @Post('testing')  
-        public async Test(@Body() id:CoursesEntity) {
-        return await this.courseService.MaxModuleOrderValue(id);  
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,23 +132,19 @@ export class CoursesController {
     //////////////////// ФИЛЬТРЫ  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Get('allcourses')
-    public async AllCourses(){
-    return await this.courseService.AllCourses();
+        public async AllCourses(){
+        return await this.courseService.AllCourses();
     }
 
     @Get('catalog/tags?')
         public async findbytags(
             @Query('primarytag') primarytag: string,
-            @Query('secondarytag') secondarytag: string,)
-    {
+            @Query('secondarytag') secondarytag: string,) {
         return await this.courseService.catalogfind(primarytag,secondarytag)
     }
 
     @Get('search/?')
-        public async search(
-            @Query('text') text:string
-        )
-    {
+        public async search(@Query('text') text:string) {
         return await this.courseService.search(text)
     }
 

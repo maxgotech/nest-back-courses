@@ -68,7 +68,7 @@ export class StudiesServices {
         return toStudyDto(studyInDb);
     }
 
-    async StudyListByCreatorID({ user }: StudyDto){
+    async StudyListByCreatorID(user:any){
         if (user==null){
             return;
         } else {
@@ -82,7 +82,7 @@ export class StudiesServices {
     }
     }
 
-    async StudyListByModule({ id }){ //выводить не занятия с модулями а модуль с занятиями (исправить)
+    async StudyListByModule(id:any){ //выводить не занятия с модулями а модуль с занятиями (исправить)
         if (id==null){
             return;
         } else {
@@ -100,7 +100,7 @@ export class StudiesServices {
     }
     }
 
-    async FindStudyByID({id}:StudyDto){
+    async FindStudyByID(id){
         if (id==null){
             return;
         } else {
@@ -294,7 +294,7 @@ export class StudiesServices {
 
     
 
-    async FindStudyByTypeAndID({id,type_content}:StudyDto){
+    async FindStudyByTypeAndID(id,type_content){
         if (id==null){
             return;
         } else if(type_content==1) {

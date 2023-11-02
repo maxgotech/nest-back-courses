@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
@@ -111,7 +111,7 @@ export class CoursesService {
         return toCourseDescDto(coursedesc);
     }
     
-    async CoursesListByCreatorID({ user }: CourseDto){   // поиск списка курсов пользователей
+    async CoursesListByCreatorID(user){   // поиск списка курсов пользователей
         if (user==null){
             return;
         } else {
@@ -125,7 +125,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByID({id}:CourseDto){    // поиск курса по айди               //возвращает лишнюю информацию 
+    async FindCourseByID(id){    // поиск курса по айди               //возвращает лишнюю информацию 
         if (id==null){
             return;
         } else {
@@ -134,7 +134,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByTranslit({translit}:CourseDto){  // поиск курса по транслиту
+    async FindCourseByTranslit(translit){  // поиск курса по транслиту
         if (translit==null){
             return;
         } else {
@@ -222,16 +222,19 @@ export class CoursesService {
         return res
     }
 
-    async FindModuleByID({id}:ModuleDto){   // поиск модуля по ид
+    async FindModuleByID(id){   // поиск модуля по ид
         if (id==null){
             return;
         } else {
         const Study = await this.moduleRepo.findOne({relations:['course'], where: { id } });
+        if (Study==null){
+            throw new NotFoundException('no module found')
+        }
         return toModuleDto(Study);
     }
     }
 
-    async ModuleListByCourse({ id }:CourseDto){ // поиск всех модулей курса
+    async ModuleListByCourse(id){ // поиск всех модулей курса
         if (id==null){
             return;
         } else {

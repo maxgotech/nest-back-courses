@@ -1,4 +1,4 @@
-import {Controller, Body, Post, Get, Param, Res, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { Controller, Body, Post, Get, Param, Res, UseInterceptors, UploadedFile, BadRequestException, Patch, Query } from '@nestjs/common';
 import { UserService } from '../service/user-services.service';
 import { UserDto } from '../dto/user.dto';
 import { Response } from 'express';
@@ -12,12 +12,12 @@ export class UserController {
         
     }
     
-    @Post('data')
-    public async login(@Body() UserDto: UserDto): Promise<UserDto> {
-        return await this.userService.UserDatabyMail(UserDto);  
+    @Get('data?')
+    public async UserData(@Query('mail') mail: UserDto): Promise<UserDto> {
+        return await this.userService.UserDatabyMail(mail);  
     }
 
-    @Post('updateuser')
+    @Patch('updateuser')
     public async UpdateUserData(@Body() UserDto: UserDto): Promise<UserDto> {
         return await this.userService.UpdateUserData(UserDto);
     }

@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseInterceptors, UploadedFile, Get, Param, Res, Headers, Delete } from '@nestjs/common';
+import { Controller, Body, Post, UseInterceptors, UploadedFile, Get, Param, Res, Headers, Delete, Query, Patch } from '@nestjs/common';
 import { StudiesServices } from '../service/studies-services.service';
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudyDto } from '../dto/study/study.dto';
@@ -36,59 +36,62 @@ export class StudiesController{
         return await this.studyService.createVideoStudy(CreateVideoDto);  
     }
 
-    @Post('studylist')
-        public async getStudies(@Body() studyDto:StudyDto) {
-        return await this.studyService.StudyListByCreatorID(studyDto);
+    @Get('studylist?')
+        public async getStudies(@Query('user') user) {
+        return await this.studyService.StudyListByCreatorID(user);
     }
 
-    @Post('studylistbymodule')
-        public async getStudiesByModule(@Body() id:any) {
+    @Get('studylistbymodule?')
+        public async getStudiesByModule(@Query('id') id) {
         return await this.studyService.StudyListByModule(id);
     }
 
-    @Post('study')
-        public async getStudy(@Body() studyDto:StudyDto) {
-        return await this.studyService.FindStudyByID(studyDto);
+    @Get('study')
+        public async getStudy(@Query('id') id) {
+        return await this.studyService.FindStudyByID(id);
     }
 
-    @Post('studybytype')
-    public async getStudybyType(@Body() studyDto:StudyDto) {
-    return await this.studyService.FindStudyByTypeAndID(studyDto);
+    @Get('studybytype?')
+    public async getStudybyType(
+        @Query('id') id,
+        @Query('type_content') type_content,
+    ) {
+    return await this.studyService.FindStudyByTypeAndID(id,type_content);
 }
 
-    @Post('updateTypeContent')
+    @Patch('updateTypeContent')
         public async updateTypeContent(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyTypeContent(studyDto);
     }
 
-    @Post('updateIdContent')
+    @Patch('updateIdContent')
         public async updateIdContent(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyIdContent(studyDto);
     }
 
-    @Post('updateCourseAndModule')
+    @Patch('updateCourseAndModule')
         public async updateCourseAndModule(@Body() studyDto:StudyDto) {
         return await this.studyService.updateStudyCourseAndModule(studyDto);
     }
 
-    @Post('updateTextContent')
+    @Patch('updateTextContent')
         public async updateTextContent(@Body() textDto:TextDto) {
         return await this.studyService.updateTextStudy(textDto);
     }
 
-    @Post('updateVideoContent')
+    @Patch('updateVideoContent')
         public async updateVideoContent(@Body() videoDto:VideoDto) {
         return await this.studyService.updateVideoStudy(videoDto);
     }
 
-    @Post('getTextContent')
-        public async getTextContent(@Body() textDto:TextDto) {
-        return await this.studyService.GetTextContent(textDto);
+    @Get('getTextContent?')
+        public async getTextContent(@Query('id') id: TextDto) {
+        return await this.studyService.GetTextContent(id);
     }
 
-    @Post('getVideoContent')
-        public async getVideoContent(@Body() videoDto:VideoDto) {
-        return await this.studyService.GetVideoContent(videoDto);
+    @Get('getVideoContent')
+        public async getVideoContent(@Query('id') id:VideoDto) {
+        return await this.studyService.GetVideoContent(id);
     }
 
     @Post('videoupload')
