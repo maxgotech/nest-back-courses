@@ -1,6 +1,6 @@
 import { CreateStudyDto } from '../dto/study/study-create.dto';
 import { StudiesEntity } from '../model/studies.entity';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StudyDto } from '../dto/study/study.dto';
@@ -49,7 +49,7 @@ export class StudiesServices {
             where: { id } 
         });
         if (!studyInDb) {
-            throw new HttpException('Study not found', HttpStatus.BAD_REQUEST);    
+            throw new NotFoundException('study not found')
         }
         await this.studyRepo.remove(studyInDb); //удаление занятия
         const studyDto:StudyDto={
@@ -70,7 +70,7 @@ export class StudiesServices {
 
     async StudyListByCreatorID(user:any){
         if (user==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
             const StudyList = await this.studyRepo
             .createQueryBuilder("study")
@@ -78,13 +78,16 @@ export class StudiesServices {
                 "user":user
             })
             .getMany();
+            if(StudyList==null){
+                throw new NotFoundException('study not found')
+            }
         return StudyList.reverse();
     }
     }
 
     async StudyListByModule(id:any){ //выводить не занятия с модулями а модуль с занятиями (исправить)
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const StudyListByModule = await this.studyRepo.find({
             relations:{
@@ -96,15 +99,21 @@ export class StudiesServices {
                 }
             }
         });
+        if(StudyListByModule==null){
+            throw new NotFoundException('study not found')
+        }
         return StudyListByModule;
     }
     }
 
     async FindStudyByID(id){
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const Study = await this.studyRepo.findOne({ where: { id } });
+        if(Study==null){
+            throw new NotFoundException('study not found')
+        }
         return toStudyDto(Study);
     }
     }
@@ -207,13 +216,21 @@ export class StudiesServices {
     async GetTextContent(textDto:TextDto): Promise<TextDto>{
         const { id } = textDto;
         const text = await this.textRepo.findOne({where:{id}});
+        if(text==null){
+            throw new NotFoundException('text study not found')
+        }
         return toTextDto(text);
     }
 
     async GetVideoContent(videoDto:VideoDto){
         const { id } = videoDto;
         const video = await this.videoRepo.findOne({where:{id}});
-
+        if(video==null){
+            throw new NotFoundException('video study not found')
+        }
+        if(video.id_video==null){
+            throw new NotFoundException('video not found')
+        }
         return fetch('https://api.kinescope.io/v1/videos/'+video.id_video,
         {method:'GET',
         headers:{
@@ -296,12 +313,21 @@ export class StudiesServices {
 
     async FindStudyByTypeAndID(id,type_content){
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else if(type_content==1) {
             const text = await this.textRepo.findOne({ where: { id } });
+            if(text==null){
+                throw new NotFoundException('text study not found')
+            }
             return text;
         } else if(type_content==2) {
             const video = await this.videoRepo.findOne({ where: { id } });
+            if (video==null){
+                throw new NotFoundException('video study not found')
+            }
+            if(video.id_video==null){
+                throw new NotFoundException('video not found')
+            }
             return fetch('https://api.kinescope.io/v1/videos/'+video.id_video,
             {method:'GET',
             headers:{

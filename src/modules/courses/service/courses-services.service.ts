@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
@@ -63,13 +63,16 @@ export class CoursesService {
     }
 
     async deleteCourse(id: number) {    // удаление курса
+        if(id==null){
+            throw new BadRequestException('invalid data');
+        }
 
         // check if the study exists in the db    
         const courseInDb = await this.courseRepo.findOne({ 
             where: { id } 
         });
         if (!courseInDb) {
-            throw new HttpException('course not found', HttpStatus.BAD_REQUEST);    
+            throw new NotFoundException('course not found')  
         }
 
         await this.studyRepo
@@ -113,7 +116,7 @@ export class CoursesService {
     
     async CoursesListByCreatorID(user){   // поиск списка курсов пользователей
         if (user==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
             const CoursesList = await this.courseRepo
             .createQueryBuilder("course")
@@ -121,22 +124,28 @@ export class CoursesService {
                 "user":user
             })
             .getMany();
+        if(CoursesList==null){
+            throw new NotFoundException('courses not found')
+        }
         return CoursesList.reverse();
     }
     }
 
-    async FindCourseByID(id){    // поиск курса по айди               //возвращает лишнюю информацию 
+    async FindCourseByID(id){    // поиск курса по айди    
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { id } });
+        if(Course==null){
+            throw new NotFoundException('course not found')
+        }
         return toCourseDto(Course);
     }
     }
 
     async FindCourseByTranslit(translit){  // поиск курса по транслиту
         if (translit==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { translit } });
         return toCourseDto(Course);
@@ -144,6 +153,9 @@ export class CoursesService {
     }
 
     async createCourseFolder(createCourseFolder:CreateCourseFolderDto){  // содание папки курса в фс
+        if(createCourseFolder.id==null){
+            throw new BadRequestException('invalid data');
+        }
         const fs = require('fs');
         const folderName = "assets/courses/course_" + createCourseFolder.id;
 
@@ -158,6 +170,9 @@ export class CoursesService {
     }
 
     async deleteCourseFolder(course:CourseDto) {  // удаление папки курса из фс
+        if(course.id==null){
+            throw new BadRequestException('invalid data');
+        }
 
         const folderName = "assets/courses/course_" + course.id;
         try {
@@ -172,12 +187,18 @@ export class CoursesService {
 
     async publishCourse(courseDto:CourseDto){
         const {id} = courseDto
+        if(id==null){
+            throw new BadRequestException('invalid data');
+        }
         await this.courseRepo.createQueryBuilder()
         .update()
         .set({published:true})
         .where("id=:id",{id:id})
         .execute()
         const course = await this.courseRepo.findOne({where:{id}})
+        if(course==null){
+            throw new NotFoundException('course not found')
+        }
         return toCourseDto(course);
     }
 
@@ -190,7 +211,6 @@ export class CoursesService {
 
     async createModule(moduleDto: CreateModuleDto): Promise<ModuleDto> {    // создание модуля 
         const { name, about, course } = moduleDto;
-        console.log(course)
         const module_order = await this.MaxModuleOrderValue(course) + 1
         const module: ModuleEntity = await this.moduleRepo.create({ name, about, course, module_order });
         await this.moduleRepo.save(module);
@@ -204,7 +224,7 @@ export class CoursesService {
             where: { id } 
         });
         if (!moduleInDb) {
-            throw new HttpException('module not found', HttpStatus.BAD_REQUEST);    
+            throw new NotFoundException('module not found')
         }
 
         await this.studyRepo
@@ -224,11 +244,11 @@ export class CoursesService {
 
     async FindModuleByID(id){   // поиск модуля по ид
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const Study = await this.moduleRepo.findOne({relations:['course'], where: { id } });
         if (Study==null){
-            throw new NotFoundException('no module found')
+            throw new NotFoundException('module not found')
         }
         return toModuleDto(Study);
     }
@@ -236,7 +256,7 @@ export class CoursesService {
 
     async ModuleListByCourse(id){ // поиск всех модулей курса
         if (id==null){
-            return;
+            throw new BadRequestException('invalid data');
         } else {
         const ModuleList = await this.courseRepo
         .createQueryBuilder("course")
@@ -249,6 +269,9 @@ export class CoursesService {
         })
         .orderBy("module.module_order","ASC")
         .getMany();
+        if(ModuleList==null){
+            throw new NotFoundException('module not found')
+        }
         return ModuleList;
     }
     }
