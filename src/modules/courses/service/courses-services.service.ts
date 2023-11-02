@@ -3,7 +3,7 @@ import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CoursesEntity } from '../model/course.entity';
 import { toModuleDto, toCourseDto, toCourseDescDto } from 'src/shared/mapper';
 import { CreateCourseDto } from '../dto/course/course-create.dto';
@@ -282,7 +282,7 @@ export class CoursesService {
 
 
 
-    //////////////////// ФИЛЬТРЫ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////// ПОИСКОВИКИ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     async AllCourses(){  //поиск всех куров
 
@@ -290,7 +290,7 @@ export class CoursesService {
         return CoursesList;
     }
 
-    async catalogfind(primarytag:string,secondarytag:string){  //фильтр по датам и ценам
+    async catalogfind(primarytag:string,secondarytag:string){  //фильтры по тегам
         if (primarytag==null)
         {
             return this.AllCourses()
@@ -344,16 +344,16 @@ export class CoursesService {
         return response
     }
 
-    async search(searchQuery:string){
+    async search(searchQuery:string){ // поиск по вводу названия
         if (searchQuery==null){
             return this.AllCourses()
         }
-        let response =[]
+        let courses =[]
         const wordsArray = searchQuery.split(' ')
-        console.log(wordsArray)
         for await(const SearchWord of wordsArray){
-            const foundWords = await this.courseRepo.createQueryBuilder()
-            .where('name LIKE :word',{ word:'%'+SearchWord+'%'})
+            const foundWords = await this.courseRepo.createQueryBuilder("course")
+            .leftJoinAndSelect("course.user","user")
+            .where('course.name LIKE :word',{ word:'%'+SearchWord+'%'})
             .andWhere({
                 "published":true
             })
@@ -361,12 +361,15 @@ export class CoursesService {
             for await(const foundWord of foundWords){
                 await Levenshtein(foundWord,SearchWord).then((similar)=>{
                     if (similar>=4){
-                        response.push(foundWord)
+                        courses.push(foundWord)
                     }
                 })
             }
         }
-
+        const response = {
+            'search':searchQuery,
+            'courses':courses
+        }
         return response
     }
 
