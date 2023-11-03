@@ -60,7 +60,7 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         return toUserDto(user);  
     }
 
-    async UserDatabyMail({ mail }: UserDto): Promise<UserDto> {    
+    async UserDatabyMail(mail): Promise<UserDto> {    
         const user = await this.userRepo.findOne({ where: { mail } });
         
         if (!user) {

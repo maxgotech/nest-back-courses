@@ -13,7 +13,7 @@ export class UserController {
     }
     
     @Get('data?')
-    public async UserData(@Query('mail') mail: UserDto): Promise<UserDto> {
+    public async UserData(@Query('mail') mail): Promise<UserDto> {
         return await this.userService.UserDatabyMail(mail);  
     }
 
