@@ -85,12 +85,12 @@ export class StudiesController{
     }
 
     @Get('getTextContent?')
-        public async getTextContent(@Query('id') id: TextDto) {
+        public async getTextContent(@Query('id') id) {
         return await this.studyService.GetTextContent(id);
     }
 
     @Get('getVideoContent')
-        public async getVideoContent(@Query('id') id:VideoDto) {
+        public async getVideoContent(@Query('id') id) {
         return await this.studyService.GetVideoContent(id);
     }
 
@@ -106,17 +106,7 @@ export class StudiesController{
                 }
                 return video
             } else {
-                const id:StudyDto = {
-                    id: Number(file.originalname.split("*")[0]),
-                    name: null,
-                    id_content: null,
-                    type_content: null,
-                    id_kinescope_folder: null,
-                    user: null,
-                    course: null,
-                    module: null,
-                    study_order:1
-                }
+                const id:number = Number(file.originalname.split("*")[0])
                 const Study = await this.studyService.FindStudyByID(id)
                 return await fetch('https://uploader.kinescope.io/v2/video',
                     {method:'POST',

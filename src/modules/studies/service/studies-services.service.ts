@@ -213,8 +213,7 @@ export class StudiesServices {
         return toTextDto(text);
     }
 
-    async GetTextContent(textDto:TextDto): Promise<TextDto>{
-        const { id } = textDto;
+    async GetTextContent(id){
         const text = await this.textRepo.findOne({where:{id}});
         if(text==null){
             throw new NotFoundException('text study not found')
@@ -222,8 +221,7 @@ export class StudiesServices {
         return toTextDto(text);
     }
 
-    async GetVideoContent(videoDto:VideoDto){
-        const { id } = videoDto;
+    async GetVideoContent(id){
         const video = await this.videoRepo.findOne({where:{id}});
         if(video==null){
             throw new NotFoundException('video study not found')
