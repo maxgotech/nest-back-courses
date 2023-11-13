@@ -46,7 +46,7 @@ export class StudiesController{
         return await this.studyService.StudyListByModule(id);
     }
 
-    @Get('study')
+    @Get('study?')
         public async getStudy(@Query('id') id) {
         return await this.studyService.FindStudyByID(id);
     }
@@ -89,7 +89,7 @@ export class StudiesController{
         return await this.studyService.GetTextContent(id);
     }
 
-    @Get('getVideoContent')
+    @Get('getVideoContent?')
         public async getVideoContent(@Query('id') id) {
         return await this.studyService.GetVideoContent(id);
     }
