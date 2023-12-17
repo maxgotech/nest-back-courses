@@ -1,5 +1,11 @@
 # nest-back-courses
 Серверная часть проекта CoursesMarketplace
+
+## Используемые технологии:
+- NestJS
+- MariaDB
+- TypeORM
+
 ## Локальная установка
 1. Установить на локальную машину XAMPP
 2. Открыть XAMPP и запустить на нем MySQL Database и Apache Web Server
