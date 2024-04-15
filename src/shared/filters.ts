@@ -1,5 +1,5 @@
 export const ImageFilter = (req,file,cb) => {
-    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+    if(!file.originalname.match(/\.(jpg|jpeg|png|JPG|JPEG|PNG)$/)) {
         return cb(null, false);
     }
     cb(null,true);
