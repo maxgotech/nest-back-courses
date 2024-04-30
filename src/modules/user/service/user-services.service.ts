@@ -15,7 +15,7 @@ export class UserService {
 constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity> ) {}
 
     async findOne(options?: object): Promise<UserDto> {
-        const user =  await this.userRepo.findOne(options);    
+        const user = await this.userRepo.findOne(options);    
         return toUserDto(user);  
     }
 
@@ -45,7 +45,7 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
     }
 
     async create(userDto: CreateUserDto): Promise<UserDto> {    
-        const { mail, password, name, secondname  } = userDto;
+        const { mail, password, name, secondname, role } = userDto;
         
         // check if the user exists in the db    
         const userInDb = await this.userRepo.findOne({ 
@@ -55,7 +55,7 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);    
         }
         
-        const user: UserEntity = await this.userRepo.create({ mail, password, name, secondname });
+        const user: UserEntity = this.userRepo.create({ mail, password, name, secondname, role });
         await this.userRepo.save(user);
         return toUserDto(user);  
     }

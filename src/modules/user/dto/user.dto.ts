@@ -14,6 +14,9 @@ export class UserDto {
   @IsEmail()
   mail: string;
 
+  @IsNotEmpty()
+  role: string;
+
   about: string;
 
   pfp_path:string

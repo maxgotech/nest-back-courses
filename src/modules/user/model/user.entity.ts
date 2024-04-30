@@ -18,6 +18,9 @@ export class UserEntity {
     @Column({nullable:false})
     secondname:string;
 
+    @Column({nullable:false,default:'student'})
+    role: string;
+
     @Column({nullable:true,type:"text"})
     about:string;
 

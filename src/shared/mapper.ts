@@ -16,8 +16,8 @@ import { CreateUserFolderDto } from "src/modules/user/dto/user-folder.dto";
 import { CreateUserDto } from "src/modules/user/dto/user-create.dto";
 
 export const toUserDto = (data: UserEntity): UserDto => {  
-    const { id, name, secondname, mail, about, pfp_path } = data;
-    let userDto: UserDto = { id, name, secondname, mail, about , pfp_path };
+    const { id, name, secondname, mail, about, pfp_path, role } = data;
+    let userDto: UserDto = { id, name, secondname, mail, about , pfp_path, role };
     return userDto;
 };
 
