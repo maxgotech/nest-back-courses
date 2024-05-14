@@ -5,6 +5,8 @@ import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserImageStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';
+import { UserSignDto } from '../dto/user-sign.dto';
+import { UserEntity } from '../model/user.entity';
 
 @Controller('user')
 export class UserController { 
@@ -44,5 +46,10 @@ export class UserController {
     @Get('images/:usermail/:filename')
     async getImage(@Param('filename') filename, @Param('usermail') usermail , @Res() res:Response) {
         res.sendFile(filename, {root:'./assets/users/'+ usermail});
+    }
+
+    @Post('coursesign')
+    public async CourseSigning(@Body() signDto: UserSignDto): Promise<UserEntity>{
+        return await this.userService.signUserToCourse(signDto);
     }
 }

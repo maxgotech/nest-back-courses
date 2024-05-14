@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ModuleEntity } from "./module.entity";
 import { StudiesEntity } from "src/modules/studies/model/studies.entity";
 import { UserEntity } from "src/modules/user/model/user.entity";
@@ -17,30 +17,33 @@ export class CoursesEntity {
     @Column({nullable:false})
     translit:string;
 
-    @OneToOne(()=>CourseDescriptionEntity,(CourseDescriptionEntity)=>CourseDescriptionEntity.course, { onDelete: "CASCADE" })
+    @OneToOne(() => CourseDescriptionEntity, (CourseDescriptionEntity) => CourseDescriptionEntity.course, { onDelete: "CASCADE" })
     coursedesc:CourseDescriptionEntity;
 
     @Column({nullable:true,default:'/default/course-default.png'})
     image_path:string;
 
-    @OneToMany((type)=>ModuleEntity,(ModuleEntity)=>ModuleEntity.course)
+    @OneToMany(() => ModuleEntity, (ModuleEntity) => ModuleEntity.course)
     module:ModuleEntity[];
 
-    @OneToMany((type)=>StudiesEntity,(StudiesEntity)=>StudiesEntity.course)
+    @OneToMany(() => StudiesEntity, (StudiesEntity) => StudiesEntity.course)
     study:StudiesEntity[];
 
     @Column({nullable:true})
     price:number;
 
-    @ManyToOne((type) => UserEntity, (UserEntity) => UserEntity.id)
+    @ManyToOne(() => UserEntity, (UserEntity) => UserEntity.id)
     @JoinColumn({name:'userid'})
     user: UserEntity
 
-    @ManyToOne((type) => PrimaryTagEntity, (PrimaryTagEntity) => PrimaryTagEntity.id)
+    @ManyToMany(() => UserEntity, (signedUser) => signedUser.signedCourses, { cascade: true})
+    signedUsers: UserEntity[];
+
+    @ManyToOne(() => PrimaryTagEntity, (PrimaryTagEntity) => PrimaryTagEntity.id)
     @JoinColumn({name:'primarytagid'})
     primarytag: PrimaryTagEntity
 
-    @ManyToOne((type) => SecondaryTagEntity, (SecondaryTagEntity) => SecondaryTagEntity.id)
+    @ManyToOne(() => SecondaryTagEntity, (SecondaryTagEntity) => SecondaryTagEntity.id)
     @JoinColumn({name:'secondarytagid'})
     secondarytag: SecondaryTagEntity
 

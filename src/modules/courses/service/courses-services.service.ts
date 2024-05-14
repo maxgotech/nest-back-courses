@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleDto } from '../dto/module/module-create.dto';
 import { ModuleDto } from '../dto/module/module.dto';
 import { ModuleEntity } from '../model/module.entity';
@@ -131,7 +131,7 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByID(id){    // поиск курса по айди    
+    async FindCourseByID(id:number): Promise<CourseDto>{    // поиск курса по айди    
         if (id==null){
             throw new BadRequestException('invalid data');
         } else {
@@ -143,7 +143,21 @@ export class CoursesService {
     }
     }
 
-    async FindCourseByTranslit(translit){  // поиск курса по транслиту
+    async FindCourseEntityByID(id:number): Promise<CoursesEntity>{    // поиск курса по айди    
+        if (id==null){
+            throw new BadRequestException('invalid data');
+        } else {
+        const Course = await this.courseRepo.findOne({relations:['user','coursedesc'], where: { id } });
+        if(Course==null){
+            throw new NotFoundException('course not found')
+        }
+        return Course;
+    }
+    }
+
+
+
+    async FindCourseByTranslit(translit:string){  // поиск курса по транслиту
         if (translit==null){
             throw new BadRequestException('invalid data');
         } else {

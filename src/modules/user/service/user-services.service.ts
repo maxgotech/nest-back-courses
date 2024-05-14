@@ -8,11 +8,15 @@ import { LoginUserDto } from '../dto/user-login.dto';
 import { CreateUserDto } from '../dto/user-create.dto';
 import { comparePasswords } from 'src/shared/utils';
 import { CreateUserFolderDto } from '../dto/user-folder.dto';
+import { UserSignDto } from '../dto/user-sign.dto';
+import { CoursesService } from 'src/modules/courses/service/courses-services.service';
 const fs = require('fs');
 
 @Injectable()
 export class UserService {
-constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity> ) {}
+constructor(@InjectRepository(UserEntity) private readonly userRepo: Repository<UserEntity>,
+            private readonly coursesService: CoursesService
+            ) {}
 
     async findOne(options?: object): Promise<UserDto> {
         const user = await this.userRepo.findOne(options);    
@@ -91,6 +95,21 @@ constructor( @InjectRepository(UserEntity) private readonly userRepo: Repository
         console.error(err);
         }
         return folderName
+    }
+
+    async signUserToCourse(signDto:UserSignDto): Promise<UserEntity>{
+        const {userid, courseid} = signDto
+        const user = await this.userRepo.findOne({relations:['signedCourses'],where: {id: userid}})
+
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);    
+        }
+
+        const course = await this.coursesService.FindCourseEntityByID(courseid)
+
+        user.signedCourses.push(course)
+
+        return await this.userRepo.save(user)
     }
 
 }

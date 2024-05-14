@@ -13,5 +13,6 @@ import { SecondaryTagEntity } from './model/secondarytag.entity';
     imports: [TypeOrmModule.forFeature([CoursesEntity,ModuleEntity,CourseDescriptionEntity,StudiesEntity,PrimaryTagEntity,SecondaryTagEntity])],
     controllers: [CoursesController],
     providers: [CoursesService],
+    exports:[CoursesService]
 })
 export class CourseModule {}

@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, BeforeInsert } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, BeforeInsert, ManyToMany, JoinTable } from "typeorm";
 import * as bcrypt from 'bcrypt';
+import { CoursesEntity } from "src/modules/courses/model/course.entity";
 
 @Entity('user')
 export class UserEntity {
@@ -33,9 +34,10 @@ export class UserEntity {
     @UpdateDateColumn()
     updatedAt:Date;
 
+    @ManyToMany(() => CoursesEntity, (signedCourse) => signedCourse.signedUsers, {cascade: ['insert','update']})
+    @JoinTable()
+    signedCourses:CoursesEntity[];
 
     @BeforeInsert()  
-    async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10); 
-    }
+    async hashPassword() {this.password = await bcrypt.hash(this.password, 10)}
 }
