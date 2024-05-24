@@ -36,4 +36,3 @@ lerna-debug.log*
 
 src/modules/admin/db
 .env
-/assets
