@@ -1,5 +1,5 @@
 import { UserEntity } from '../model/user.entity';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
@@ -10,6 +10,7 @@ import { comparePasswords } from 'src/shared/utils';
 import { CreateUserFolderDto } from '../dto/user-folder.dto';
 import { UserSignDto } from '../dto/user-sign.dto';
 import { CoursesService } from 'src/modules/courses/service/courses-services.service';
+import { CoursesEntity } from 'src/modules/courses/model/course.entity';
 const fs = require('fs');
 
 @Injectable()
@@ -110,6 +111,41 @@ constructor(@InjectRepository(UserEntity) private readonly userRepo: Repository<
         user.signedCourses.push(course)
 
         return await this.userRepo.save(user)
+    }
+
+    async UserCoursesByRole(mail:string): Promise<CoursesEntity[]>{
+        const user = await this.UserDatabyMail(mail)
+
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);    
+        }
+
+        if(user.role == 'teacher') return this.TeacherCourses(user.id)
+
+        if(user.role == 'student') return this.StudentCourses(user.id)
+
+    }
+
+    async StudentCourses(id:number): Promise<CoursesEntity[]>{
+        if (!id) {
+            throw new BadRequestException('invalid data')
+        }
+        
+        const userSignedCourses = await this.userRepo
+        .createQueryBuilder('user')
+        .where("user.id=:id",{id:id})
+        .leftJoinAndSelect('user.signedCourses','course')
+        .getOne()
+
+        return userSignedCourses.signedCourses
+    }
+
+    async TeacherCourses(id:number): Promise<CoursesEntity[]>{
+        if (!id) {
+            throw new BadRequestException('invalid data')
+        }
+
+        return await this.coursesService.CourseListWithSignedUsers(id)
     }
 
 }

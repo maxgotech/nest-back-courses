@@ -131,6 +131,24 @@ export class CoursesService {
     }
     }
 
+    async CourseListWithSignedUsers(id:number): Promise<CoursesEntity[]>{
+        if (!id) {
+            throw new BadRequestException('invalid data')
+        }
+
+        const coursesList = await this.courseRepo
+        .createQueryBuilder("course")
+        .where("course.userid=:id",{id:id})
+        .leftJoinAndSelect('course.signedUsers','user')
+        .getMany()
+
+        if(coursesList==null){
+            throw new NotFoundException('courses not found')
+        }
+
+        return coursesList
+    }
+
     async FindCourseByID(id:number): Promise<CourseDto>{    // поиск курса по айди    
         if (id==null){
             throw new BadRequestException('invalid data');

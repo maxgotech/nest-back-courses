@@ -1,7 +1,7 @@
 import { Controller, Body, Post, Get, Param, Res, UseInterceptors, UploadedFile, BadRequestException, Patch, Query } from '@nestjs/common';
 import { UserService } from '../service/user-services.service';
 import { UserDto } from '../dto/user.dto';
-import { Response } from 'express';
+import { Response, query } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UserImageStorage } from 'src/shared/storages';
 import { ImageFilter } from 'src/shared/filters';
@@ -51,5 +51,10 @@ export class UserController {
     @Post('coursesign')
     public async CourseSigning(@Body() signDto: UserSignDto): Promise<UserEntity>{
         return await this.userService.signUserToCourse(signDto);
+    }
+
+    @Get('courses?')
+    async getCourses(@Query('mail') mail){
+        return await this.userService.UserCoursesByRole(mail)
     }
 }
