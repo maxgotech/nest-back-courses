@@ -113,16 +113,26 @@ constructor(@InjectRepository(UserEntity) private readonly userRepo: Repository<
         return await this.userRepo.save(user)
     }
 
-    async UserCoursesByRole(mail:string): Promise<CoursesEntity[]>{
+    async UserCoursesByRole(mail:string) {
         const user = await this.UserDatabyMail(mail)
 
         if (!user) {
             throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);    
         }
 
-        if(user.role == 'teacher') return this.TeacherCourses(user.id)
+        if(user.role == 'teacher') {
+            return {
+                courses: [...await this.TeacherCourses(user.id)],
+                type: 'teacher'
+            }
+        }
 
-        if(user.role == 'student') return this.StudentCourses(user.id)
+        if(user.role == 'student') {
+            return {
+                courses: [...await this.StudentCourses(user.id)],
+                type: 'student'
+            }
+        }
 
     }
 
