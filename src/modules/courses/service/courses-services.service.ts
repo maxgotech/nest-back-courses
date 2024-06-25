@@ -349,13 +349,12 @@ export class CoursesService {
     }
 
     async catalogfind(primarytag:string,secondarytag:string){  //фильтры по тегам
-        if (primarytag==null)
-        {
-            return this.AllCourses()
-        } else if (secondarytag==null){
-            const primary_tag = await this.primarytagRepo.find({where:{
+
+        const primary_tag = await this.primarytagRepo.findOne({where:{
                 translation:primarytag
             }})
+
+        if (secondarytag==null) {
             const CoursesList = await this.courseRepo
             .createQueryBuilder("course")
             .leftJoinAndSelect("course.user","user")
@@ -373,12 +372,11 @@ export class CoursesService {
             }
             return response
         }
-        const primary_tag = await this.primarytagRepo.find({where:{
-            translation:primarytag
-        }})
-        const secondary_tag = await this.secondarytagRepo.find({where:{
+
+        const secondary_tag = await this.secondarytagRepo.findOne({where:{
             translation:secondarytag
         }})
+
         const CoursesList = await this.courseRepo
         .createQueryBuilder("course")
         .leftJoinAndSelect("course.user","user")
